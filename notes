@@ -1,0 +1,12 @@
+Adverserially train the mask generator
+
+https://arxiv.org/pdf/1709.05188.pdf : sleeker and more circular
+More suited than A fast rcnn because this adds the constraint of the occlusion to be compact, which makjes more sense in the real life. Because there aren't random occlusions in the real world.
+Also we need to add a maximum size constraint on the mask generator, add a penalty for largetr masks maybe. This ensures that the ideal maxima isn't masking the whole image. Also this would ensure that the network is very efficient at finding the regions where occluding would help us create the best adverserial example(take the crude definition of the word best here)
+
+
+
+IN ASDN it is not exactly a GAN situation.
+We just have an adversary which is tasked to bring down the classification accuracy. It is trained by first pretraining the model that we have.
+Then you create training data by finding which of the points have the maximum effect.
+It is like a standard network rtained. Need training data. Then use it later for training.
