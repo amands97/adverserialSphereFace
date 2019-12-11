@@ -64,7 +64,7 @@ def find_best_threshold(thresholds, predicts):
 
 parser = argparse.ArgumentParser(description='PyTorch sphereface lfw')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
-parser.add_argument('--lfw', default='../../dataset/face/lfw/lfw.zip', type=str)
+parser.add_argument('--lfw', default='lfw/lfw.zip', type=str)
 parser.add_argument('--model','-m', default='sphere20a.pth', type=str)
 args = parser.parse_args()
 
@@ -76,7 +76,7 @@ net.eval()
 net.feature = True
 
 zfile = zipfile.ZipFile(args.lfw)
-
+# print(zfile)
 landmark = {}
 with open('data/lfw_landmark.txt') as f:
     landmark_lines = f.readlines()
@@ -88,6 +88,8 @@ with open('data/pairs.txt') as f:
     pairs_lines = f.readlines()[1:]
 
 for i in range(6000):
+    if (i%100 == 0):
+        print("done:", i)
     p = pairs_lines[i].replace('\n','').split('\t')
 
     if 3==len(p):
@@ -122,6 +124,7 @@ folds = KFold(n=6000, n_folds=10, shuffle=False)
 thresholds = np.arange(-1.0, 1.0, 0.005)
 predicts = np.array(map(lambda line:line.strip('\n').split(), predicts))
 for idx, (train, test) in enumerate(folds):
+    
     best_thresh = find_best_threshold(thresholds, predicts[train])
     accuracy.append(eval_acc(best_thresh, predicts[test]))
     thd.append(best_thresh)

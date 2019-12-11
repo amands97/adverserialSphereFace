@@ -129,6 +129,7 @@ def train(epoch,args):
 
 net = getattr(net_sphere,args.net)()
 # net.load_state_dict(torch.load('sphere20a_0.pth'))
+
 net.cuda()
 criterion = net_sphere.AngleLoss()
 
