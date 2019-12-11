@@ -10,3 +10,4 @@ IN ASDN it is not exactly a GAN situation.
 We just have an adversary which is tasked to bring down the classification accuracy. It is trained by first pretraining the model that we have.
 Then you create training data by finding which of the points have the maximum effect.
 It is like a standard network rtained. Need training data. Then use it later for training.
+TODO: see how many steps it wS TRINED AND HOW much was it used for adverserial training later. 
