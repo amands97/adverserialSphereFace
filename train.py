@@ -110,11 +110,11 @@ def train(epoch,args):
         inputs, targets = Variable(inputs), Variable(targets)
         outputs = net(inputs)
         loss = criterion(outputs, targets)
-        lossd = loss.data[0]
+        lossd = loss.data
         loss.backward()
         optimizer.step()
 
-        train_loss += loss.data[0]
+        train_loss += loss.data
         outputs = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs.data, 1)
         total += targets.size(0)
@@ -129,8 +129,8 @@ def train(epoch,args):
 
 net = getattr(net_sphere,args.net)()
 # net.load_state_dict(torch.load('sphere20a_0.pth'))
-
-net.cuda()
+if torch.cuda.is_available():
+    net.cuda()
 criterion = net_sphere.AngleLoss()
 
 
