@@ -93,10 +93,10 @@ class AngleLoss(nn.Module):
 
 
 class sphere20a(nn.Module):
-    def __init__(self,classnum=10574):#,feature=False):
+    def __init__(self,classnum=10574,feature=False):
         super(sphere20a, self).__init__()
         self.classnum = classnum
-        # self.feature = feature
+        self.feature = feature
         #input = B*3*112*96
         self.conv1_1 = nn.Conv2d(3,64,3,2,1) #=>B*64*56*48
         self.relu1_1 = nn.PReLU(64)
@@ -170,30 +170,7 @@ class sphere20a(nn.Module):
 
         x = x.view(x.size(0),-1)
         x = self.fc5(x)
-        # if self.feature: return x
+        if self.feature: return x
 
         x = self.fc6(x)
         return x
-    def forward_feature(self, x):
-        x = self.relu1_1(self.conv1_1(x))
-        x = x + self.relu1_3(self.conv1_3(self.relu1_2(self.conv1_2(x))))
-
-        x = self.relu2_1(self.conv2_1(x))
-        x = x + self.relu2_3(self.conv2_3(self.relu2_2(self.conv2_2(x))))
-        x = x + self.relu2_5(self.conv2_5(self.relu2_4(self.conv2_4(x))))
-
-        x = self.relu3_1(self.conv3_1(x))
-        x = x + self.relu3_3(self.conv3_3(self.relu3_2(self.conv3_2(x))))
-        x = x + self.relu3_5(self.conv3_5(self.relu3_4(self.conv3_4(x))))
-        x = x + self.relu3_7(self.conv3_7(self.relu3_6(self.conv3_6(x))))
-        x = x + self.relu3_9(self.conv3_9(self.relu3_8(self.conv3_8(x))))
-
-        x = self.relu4_1(self.conv4_1(x))
-        x = x + self.relu4_3(self.conv4_3(self.relu4_2(self.conv4_2(x))))
-        return x
-        # x = x.view(x.size(0),-1)
-        # x = self.fc5(x)
-        # if self.feature: return x
-
-        # x = self.fc6(x)
-        # return x

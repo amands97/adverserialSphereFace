@@ -17,12 +17,6 @@ class MaskMan(nn.Module):
         self.sigmoid = nn.Sigmoid()
         
 
-# import torch
-# import torch.nn as nn
-# from torch.autograd import Variable
-# import torch.nn.functional as F
-# from torch.nn import Parameter
-# import math
 # a = torch.rand((3,2)).type(torch.DoubleTensor)
 # print(a)
 # b = torch.randint(2, (3, 2)).type(torch.DoubleTensor)
