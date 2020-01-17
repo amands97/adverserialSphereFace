@@ -91,6 +91,21 @@ class AngleLoss(nn.Module):
 
         return loss
 
+class newNetwork(nn.Module):
+    def __init__(self, basemodel, adversary):
+        super(newNetwork, self).__init__()
+        self.basemodel = basemodel
+        self.adversary =  adversary
+        self.fc1 = nn.Linear(512*7*6,512)
+        self.fc2 = AngleLinear(512,self.classnum)
+    
+    def forward(self, x):
+        x = self.basemodel(x)
+        x = self.adversary(x)
+        x = self.fc1(x)
+        x = self.fc2(x)
+        return x
+
 
 class sphere20a(nn.Module):
     def __init__(self,classnum=10574):#,feature=False):
@@ -169,10 +184,8 @@ class sphere20a(nn.Module):
         x = x + self.relu4_3(self.conv4_3(self.relu4_2(self.conv4_2(x))))
 
         x = x.view(x.size(0),-1)
-        x = self.fc5(x)
-        # if self.feature: return x
-
-        x = self.fc6(x)
+        # x = self.fc5(x)
+        # x = self.fc6(x)
         return x
     def forward_feature(self, x):
         x = self.relu1_1(self.conv1_1(x))
