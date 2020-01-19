@@ -7,13 +7,16 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 torch.backends.cudnn.bencmark = True
 
-import os,sys,cv2,random,datetime
+import os,sys
+import cv2
+import random,datetime
 import argparse
 import numpy as np
 
 from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
+import adversary
 
 
 parser = argparse.ArgumentParser(description='PyTorch sphereface')
@@ -40,20 +43,25 @@ def alignment(src_img,src_pts):
 
 
 def dataset_load(name,filename,pindex,cacheobj,zfile):
+    print("lol?")
     position = filename.rfind('.zip:')
+    print("lol?")
+    
     zipfilename = filename[0:position+4]
     nameinzip = filename[position+5:]
-
+    print("lol")
     split = nameinzip.split('\t')
     nameinzip = split[0]
     classid = int(split[1])
     src_pts = []
     for i in range(5):
         src_pts.append([int(split[2*i+2]),int(split[2*i+3])])
+    print("lol")
 
     data = np.frombuffer(zfile.read(nameinzip),np.uint8)
     img = cv2.imdecode(data,1)
     img = alignment(img,src_pts)
+    print("lol")
 
     if ':train' in name:
         if random.random()>0.5: img = cv2.flip(img,1)
@@ -65,6 +73,7 @@ def dataset_load(name,filename,pindex,cacheobj,zfile):
             img = img[2:2+112,2:2+96,:]
     else:
         img = img[2:2+112,2:2+96,:]
+    print("lol")
 
 
     img = img.transpose(2, 0, 1).reshape((1,3,112,96))
@@ -97,8 +106,10 @@ def train(epoch,args):
     correct = 0
     total = 0
     batch_idx = 0
+    print("here?")
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
+    print("here4")
     while True:
         img,label = ds.get()
         if img is None: break
@@ -124,12 +135,15 @@ def train(epoch,args):
             % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
             lossd, criterion.lamb, criterion.it))
         batch_idx += 1
+        break
     print('')
 
 
 net = getattr(net_sphere,args.net)()
+advNet = getattr(adversary, "MaskMan")(10)
+print(advNet)
 net.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
-print(net)
+# print(net)
 if torch.cuda.is_available():
     net.cuda()
 criterion = net_sphere.AngleLoss()
@@ -137,11 +151,13 @@ criterion = net_sphere.AngleLoss()
 
 print('start: time={}'.format(dt()))
 for epoch in range(0, 20):
+    print("here")
     if epoch in [0,10,15,18]:
         if epoch!=0: args.lr *= 0.1
         optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-
+    print("here2")
     train(epoch,args)
+    print("here3")
     save_model(net, '{}_{}.pth'.format(args.net,epoch))
 
 print('finish: time={}\n'.format(dt()))
