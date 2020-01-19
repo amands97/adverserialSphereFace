@@ -120,6 +120,7 @@ def train(epoch,args):
         optimizer.zero_grad()
         inputs, targets = Variable(inputs), Variable(targets)
         outputs = net(inputs)
+        print(outputs.size())
         loss = criterion(outputs, targets)
         lossd = loss.data
         loss.backward()
