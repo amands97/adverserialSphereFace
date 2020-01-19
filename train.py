@@ -139,14 +139,15 @@ def train(epoch,args):
     print('')
 
 
-net = getattr(net_sphere,args.net)()
+net1 = getattr(net_sphere,args.net)()
 advNet = getattr(adversary, "MaskMan")(10)
 print(advNet)
+net = getattr(net_sphere, "newNetwork")(net1, adversary)
 # net.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 # print(net)
 if torch.cuda.is_available():
     net.cuda()
-    print("CUDAAAA\n\n\n\n\n\n\n")
+    # print("CUDAAAA\n\n\n\n\n\n\n")
 criterion = net_sphere.AngleLoss()
 
 
