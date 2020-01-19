@@ -124,7 +124,6 @@ def train(epoch,args):
         lossd = loss.data
         loss.backward()
         optimizer.step()
-
         train_loss += loss.data
         outputs = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs.data, 1)
@@ -142,7 +141,7 @@ def train(epoch,args):
 net = getattr(net_sphere,args.net)()
 advNet = getattr(adversary, "MaskMan")(10)
 print(advNet)
-net.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+# net.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 # print(net)
 if torch.cuda.is_available():
     net.cuda()
