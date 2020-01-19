@@ -132,10 +132,10 @@ def train(epoch,args):
 
 
 net1 = getattr(net_sphere,args.net)()
+net1.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 advNet = getattr(adversary, "MaskMan")(512)
 print(advNet)
 net = getattr(net_sphere, "newNetwork")(net1, advNet)
-net.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 # print(net)
 if torch.cuda.is_available():
     net.cuda()
