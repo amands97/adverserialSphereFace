@@ -145,6 +145,7 @@ print(advNet)
 # print(net)
 if torch.cuda.is_available():
     net.cuda()
+    print("CUDAAAA\n\n\n\n\n\n\n")
 criterion = net_sphere.AngleLoss()
 
 
