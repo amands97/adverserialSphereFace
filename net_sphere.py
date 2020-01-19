@@ -102,9 +102,7 @@ class newNetwork(nn.Module):
     
     def forward(self, x):
         x = self.basemodel(x)
-        print(x.size())
         x = self.adversary(x)
-        print(x.size())
         x = x.view(x.size(0),-1)
         x = self.fc1(x)
         x = self.fc2(x)
