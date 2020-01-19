@@ -92,10 +92,11 @@ class AngleLoss(nn.Module):
         return loss
 
 class newNetwork(nn.Module):
-    def __init__(self, basemodel, adversary):
+    def __init__(self, basemodel, adversary, classnum=10574):
         super(newNetwork, self).__init__()
         self.basemodel = basemodel
         self.adversary =  adversary
+        self.classnum = classnum
         self.fc1 = nn.Linear(512*7*6,512)
         self.fc2 = AngleLinear(512,self.classnum)
     
