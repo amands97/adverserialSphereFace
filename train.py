@@ -137,10 +137,10 @@ def train(epoch,args):
         loss = - criterion(outputs, targets) + 10 * lossCompact + lossSize/1000
         lossd = loss.data
         loss.backward()
-        print(loss)
-        import sys
-        sys.exit()
-        optimizer.step()
+        # print(loss)
+        # import sys
+        # sys.exit()
+        optimizerMask.step()
         train_loss += loss.data
         outputs = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs.data, 1)
@@ -151,7 +151,7 @@ def train(epoch,args):
             % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
             lossd, criterion.lamb, criterion.it))
         batch_idx += 1
-        break
+        # break
     print('')
 
 
