@@ -12,7 +12,7 @@ import cv2
 import random,datetime
 import argparse
 import numpy as np
-
+np.warnings.filterwarnings('ignore')
 from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
