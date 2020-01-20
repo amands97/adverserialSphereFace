@@ -13,7 +13,7 @@ class MaskMan(nn.Module):
         self.relu1_1 = nn.PReLU(in_features)
         self.conv1_2 = nn.Conv2d(in_features,in_features,3,1,1)
         self.relu1_2 = nn.PReLU(in_features)
-        self.conv1_3 = nn.Conv2d(in_features,1,3,1,1)
+        self.conv1_3 = nn.Conv2d(in_features,in_features,3,1,1)
         self.sigmoid = nn.Sigmoid()
         
 
