@@ -184,10 +184,10 @@ print('start: time={}'.format(dt()))
 for epoch in range(0, 20):
     if epoch in [0,10,15,18]:
         if epoch!=0: args.lr *= 0.1
-        # optimizer = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=0.9, weight_decay=5e-4)
-        optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
     save_model(net, '{}_{}.pth'.format(args.net,epoch))
 
