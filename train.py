@@ -166,7 +166,7 @@ featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 maskNet = getattr(adversary, "MaskMan")(512)
 fcNet = getattr(net_sphere, "fclayers")()
 pretrainedDict = torch.load('model/sphere20a_20171020.pth')
-fcDict = {k: pretrainedDict[l for k in pretrainedDict if k in fcNet.state_dict()]}
+fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
 fcNet.load_state_dict(fcDict)
 laplacianKernel = getKernel()
 # print(advNet)
