@@ -54,7 +54,7 @@ def dataset_load(name,filename,pindex,cacheobj,zfile):
     for i in range(5):
         src_pts.append([int(split[2*i+2]),int(split[2*i+3])])
 
-    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+    data = np.frombuffer(zfile.read(nameinzip),np.bool)
     img = cv2.imdecode(data,1)
     img = alignment(img,src_pts)
 
