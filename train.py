@@ -12,7 +12,6 @@ import cv2
 import random,datetime
 import argparse
 import numpy as np
-# np.warnings.filterwarnings('ignore')
 
 from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
@@ -55,7 +54,7 @@ def dataset_load(name,filename,pindex,cacheobj,zfile):
     for i in range(5):
         src_pts.append([int(split[2*i+2]),int(split[2*i+3])])
 
-    data = np.frombuffer(zfile.read(nameinzip),np.bool)
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
     img = cv2.imdecode(data,1)
     img = alignment(img,src_pts)
 
@@ -136,7 +135,7 @@ def train(epoch,args):
         lossAdv = criterion(outputs, targets)
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
-        lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
+        lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda, size_average = False)
         print(criterion(outputs, targets), lossCompact, lossSize)
         loss = - criterion(outputs, targets) + lossCompact + lossSize
         lossd = loss.data
