@@ -120,7 +120,6 @@ def train(epoch,args):
         inputs = torch.from_numpy(img).float()
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
-        if use_cuda: laplacianKernel = laplacianKernel.cuda()
 
         optimizerMask.zero_grad()
         inputs, targets = Variable(inputs), Variable(targets)
@@ -169,7 +168,7 @@ if torch.cuda.is_available():
     featureNet.cuda()
     maskNet.cuda()
     fcNet.cuda()
-    
+    laplacianKernel.cuda()
 
 criterion = net_sphere.AngleLoss()
 
