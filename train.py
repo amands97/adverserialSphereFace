@@ -151,8 +151,8 @@ def train(epoch,args):
         _, predicted = torch.max(outputs.data, 1)
         total += targets.size(0)
         correct += predicted.eq(targets.data).cpu().sum()
-
-        printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d'
+        print("classification loss:", classification_loss / (batch_idx + 1))
+        printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d\n'
             % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
             lossd, criterion.lamb, criterion.it))
         batch_idx += 1
