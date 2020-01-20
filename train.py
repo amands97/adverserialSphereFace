@@ -168,7 +168,7 @@ if torch.cuda.is_available():
     featureNet.cuda()
     maskNet.cuda()
     fcNet.cuda()
-    laplacianKernel.cuda()
+    laplacianKernel =  laplacianKernel.cuda()
 
 criterion = net_sphere.AngleLoss()
 
