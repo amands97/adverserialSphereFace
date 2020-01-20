@@ -127,13 +127,13 @@ def train(epoch,args):
         features = featureNet(inputs)
         mask = maskNet(features)
         # mask size(1, 512, 7, 6)
-
+        print(mask.size())
         maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(maskedFeatures)
 
         # training the advNet:
         lossAdv = criterion(outputs, targets)
-        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=c))
+        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
         print(criterion(outputs, targets), lossCompact, lossSize)
