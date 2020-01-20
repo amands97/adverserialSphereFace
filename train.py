@@ -134,8 +134,8 @@ def train(epoch,args):
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
-        print(- criterion(outputs, targets), lossCompact/10, lossSize/1000)
-        loss = - criterion(outputs, targets) + lossCompact/10 + lossSize/1000
+        print("advnet:", - criterion(outputs, targets).data, lossCompact.data/10, lossSize.data/100)
+        loss = - criterion(outputs, targets) + lossCompact/10 + lossSize/100
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
@@ -185,7 +185,7 @@ for epoch in range(0, 20):
     if epoch in [0,10,15,18]:
         if epoch!=0: args.lr *= 0.1
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-        optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=0.9, weight_decay=5e-4)
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
