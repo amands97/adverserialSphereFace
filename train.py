@@ -137,7 +137,7 @@ def train(epoch,args):
         print(- criterion(outputs, targets), lossCompact/10, lossSize/1000)
         loss = - criterion(outputs, targets) + lossCompact/10 + lossSize/1000
         lossd = loss.data
-        loss.backward()
+        loss.backward(retain_graph=True)
         optimizerMask.step()
         
         optimizerFC.zero_grad()
