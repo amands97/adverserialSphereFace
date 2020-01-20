@@ -1,0 +1,6 @@
+{
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+    "python.pythonPath": "/Users/amands97/thesis/adverserialSphereFace/env/bin/python2.7",
+    "python.linting.pycodestyleEnabled": true
+}

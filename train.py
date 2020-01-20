@@ -17,7 +17,7 @@ from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
 import adversary
-
+from torch.nn.functional import conv2d # for the kernel
 
 parser = argparse.ArgumentParser(description='PyTorch sphereface')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
@@ -93,9 +93,20 @@ def dt():
     return datetime.datetime.now().strftime('%H:%M:%S')
 
 
+def getKernel():
+    # https://discuss.pytorch.org/t/setting-custom-kernel-for-cnn-in-pytorch/27176/2
+    kernel = torch.ones((3,3))
+    kernel[1, 1] = -8
+    kernel = kernel/-8
+    b, c, h, w = x.shape
+    kernel = kernel.type(torch.FloatTensor)
+    kernel = kernel.repeat(c, 1, 1, 1)
+    return kernel
 
 def train(epoch,args):
-    net.train()
+    featureNet.train()
+    maskNet.train()
+    fcNet.train()
     train_loss = 0
     correct = 0
     total = 0
@@ -109,13 +120,27 @@ def train(epoch,args):
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
 
-        optimizer.zero_grad()
+        optimizerMask.zero_grad()
         inputs, targets = Variable(inputs), Variable(targets)
-        outputs = net(inputs)
-        # print(outputs.size())
-        loss = criterion(outputs, targets)
+        # outputs = net(inputs)
+        features = featureNet(inputs)
+        mask = advNet(features)
+        # mask size(1, 512, 7, 6)
+
+        maskedFeatures = torch.mul(mask, features)
+        outputs = fcNet(maskedFeatures)
+
+        # training the advNet:
+        lossAdv = criterion(outputs, target)
+        lossCompact = torch.sum(conv2d(mask, kernel, stride=1, groups=c))
+        # lossSize   #L1 norm of the mask to make the mask sparse.
+        lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
+        print(criterion(outputs, targets), lossCompact, lossSize)
+        loss = - criterion(outputs, targets) + lossCompact + lossSize
         lossd = loss.data
         loss.backward()
+        import sys
+        sys.exit()
         optimizer.step()
         train_loss += loss.data
         outputs = outputs[0] # 0=cos_theta 1=phi_theta
@@ -131,15 +156,19 @@ def train(epoch,args):
     print('')
 
 
-net1 = getattr(net_sphere,args.net)()
-net1.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
-advNet = getattr(adversary, "MaskMan")(512)
-print(advNet)
-net = getattr(net_sphere, "newNetwork")(net1, advNet)
-# print(net)
+featureNet = getattr(net_sphere,args.net)()
+featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+maskNet = getattr(adversary, "MaskMan")(512)
+fcNet = getattr(net_sphere, "fclayers")()
+laplacianKernel = getKernel()
+# print(advNet)
+# net = getattr(net_sphere, "newNetwork")(net1, advNet)
 if torch.cuda.is_available():
-    net.cuda()
-    # print("CUDAAAA\n\n\n\n\n\n\n")
+    featureNet.cuda()
+    maskNet.cuda()
+    fcNet.cuda()
+    
+
 criterion = net_sphere.AngleLoss()
 
 
@@ -147,7 +176,8 @@ print('start: time={}'.format(dt()))
 for epoch in range(0, 20):
     if epoch in [0,10,15,18]:
         if epoch!=0: args.lr *= 0.1
-        optimizer = optim.SGD(net.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        optimizer = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
     save_model(net, '{}_{}.pth'.format(args.net,epoch))
 

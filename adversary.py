@@ -26,11 +26,11 @@ class MaskMan(nn.Module):
     # Returns the mask. Use torch.mul(a,b) to get the resultant image. a and b are of same dimension
     # change: Return the masked image(not the mask)
     def forward(self, x):
-        x_ = x
+        # x_ = x
         x = self.relu1_1(self.conv1_1(x))
         x = self.relu1_2(self.conv1_2(x))
         x = self.sigmoid(self.conv1_3(x))
-        x = torch.mul(x, x_) #this step multiplies the mask with image
-        
+        # do the multilpication in the main part of the function
+        # x = torch.mul(x, x_) 
         return x
 
