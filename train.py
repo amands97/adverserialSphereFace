@@ -134,8 +134,8 @@ def train(epoch,args):
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
-        print("advnet:", - criterion(outputs, targets).data, lossCompact.data/1000000, lossSize.data/1000000)
-        loss = - criterion(outputs, targets) + lossCompact/1000000 + lossSize/1000000
+        print("advnet:", - criterion(outputs, targets).data, lossCompact.data/1000000000, lossSize.data/1000000)
+        loss = - criterion(outputs, targets) + lossCompact/1000000 + lossSize/1000000000
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
