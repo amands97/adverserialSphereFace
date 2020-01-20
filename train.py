@@ -125,7 +125,7 @@ def train(epoch,args):
         inputs, targets = Variable(inputs), Variable(targets)
         # outputs = net(inputs)
         features = featureNet(inputs)
-        mask = advNet(features)
+        mask = maskNet(features)
         # mask size(1, 512, 7, 6)
 
         maskedFeatures = torch.mul(mask, features)
