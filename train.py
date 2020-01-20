@@ -123,11 +123,8 @@ def train(epoch,args):
 
         optimizerMask.zero_grad()
         inputs, targets = Variable(inputs), Variable(targets)
-        # outputs = net(inputs)
         features = featureNet(inputs)
         mask = maskNet(features)
-        # mask size(1, 512, 7, 6)
-        print(mask.size())
         maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(maskedFeatures)
 
@@ -136,10 +133,11 @@ def train(epoch,args):
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
-        print(criterion(outputs, targets), lossCompact, lossSize)
-        loss = - criterion(outputs, targets) + lossCompact + lossSize
+        print(- criterion(outputs, targets), 10 * lossCompact, lossSize/1000)
+        loss = - criterion(outputs, targets) + 10 * lossCompact + lossSize/1000
         lossd = loss.data
         loss.backward()
+        print(loss)
         import sys
         sys.exit()
         optimizer.step()
