@@ -109,6 +109,7 @@ def train(epoch,args):
     maskNet.train()
     fcNet.train()
     train_loss = 0
+    classification_loss = 0
     correct = 0
     total = 0
     batch_idx = 0
@@ -137,10 +138,14 @@ def train(epoch,args):
         loss = - criterion(outputs, targets) + lossCompact/10 + lossSize/1000
         lossd = loss.data
         loss.backward()
-        # print(loss)
-        # import sys
-        # sys.exit()
         optimizerMask.step()
+        
+        optimizerFC.zero_grad()
+        lossC = criterion(outputs, targets)
+        lossClassification = lossC.data
+        lossC.backward()
+        optimizerFC.step()
+        classification_loss += lossClassification
         train_loss += loss.data
         outputs = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs.data, 1)
@@ -157,8 +162,12 @@ def train(epoch,args):
 
 featureNet = getattr(net_sphere,args.net)()
 featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+
 maskNet = getattr(adversary, "MaskMan")(512)
 fcNet = getattr(net_sphere, "fclayers")()
+pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+fcDict = {k: pretrainedDict[l for k in pretrainedDict if k in fcNet.state_dict()]}
+fcNet.load_state_dict(fcDict)
 laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
@@ -175,8 +184,10 @@ print('start: time={}'.format(dt()))
 for epoch in range(0, 20):
     if epoch in [0,10,15,18]:
         if epoch!=0: args.lr *= 0.1
-        optimizer = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        # optimizer = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
+        optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=0.9, weight_decay=5e-4)
+        optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
     save_model(net, '{}_{}.pth'.format(args.net,epoch))
 

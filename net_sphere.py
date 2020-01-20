@@ -93,13 +93,13 @@ class AngleLoss(nn.Module):
 class fclayers(nn.Module):
     def __init__(self, classnum=10574):
         super(fclayers, self).__init__()
-        self.fc1 = nn.Linear(512*7*6,512)
-        self.fc2 = AngleLinear(512, classnum)
+        self.fc5 = nn.Linear(512*7*6,512)
+        self.fc6 = AngleLinear(512, classnum)
     
     def forward(self, x):
         x = x.view(x.size(0),-1)
-        x = self.fc1(x)
-        x = self.fc2(x)
+        x = self.fc5(x)
+        x = self.fc6(x)
         return x
 class newNetwork(nn.Module):
     def __init__(self, basemodel, adversary, classnum=10574):
