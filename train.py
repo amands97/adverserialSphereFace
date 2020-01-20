@@ -98,7 +98,8 @@ def getKernel():
     kernel = torch.ones((3,3))
     kernel[1, 1] = -8
     kernel = kernel/-8
-    b, c, h, w = x.shape
+    # b, c, h, w = x.shape (hard coded here)
+    b, c, h, w = (1,512, 7, 6)
     kernel = kernel.type(torch.FloatTensor)
     kernel = kernel.repeat(c, 1, 1, 1)
     return kernel
