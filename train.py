@@ -132,8 +132,8 @@ def train(epoch,args):
         outputs = fcNet(maskedFeatures)
 
         # training the advNet:
-        lossAdv = criterion(outputs, target)
-        lossCompact = torch.sum(conv2d(mask, kernel, stride=1, groups=c))
+        lossAdv = criterion(outputs, targets)
+        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=c))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
         print(criterion(outputs, targets), lossCompact, lossSize)
