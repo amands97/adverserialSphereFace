@@ -189,7 +189,9 @@ for epoch in range(0, 20):
         optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/1000, momentum=0.9, weight_decay=5e-4)
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
-    save_model(net, '{}_{}.pth'.format(args.net,epoch))
+    save_model(featureNet, 'saved_models/featureNet_{}.pth'.format(epoch))
+    save_model(maskNet, 'saved_models/maskNet_{}.pth'.format(epoch))
+    save_model(fcNet, 'saved_models/fcNet_{}.pth'.format(epoch))
 
 print('finish: time={}\n'.format(dt()))
 

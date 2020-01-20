@@ -1,0 +1,287 @@
+(sphereface) amands@cseproj146:~/sphereface_pytorch$ CUDA_VISIBLE_DEVICES=1 python train.py --datase CASIA-WebFace.zip --bs 256
+start: time=02:51:38
+
+advnet: tensor(-0.1638, device='cuda:0') tensor(-0.0166, device='cuda:0') tensor(2.7526, device='cuda:0')
+classification loss: tensor(1.6388, device='cuda:0')
+02:51:57 Te=0 Loss=2752.4309 | AccT=91.4062% (234/256) 2752.4309 1071.43 4
+advnet: tensor(-0.0799, device='cuda:0') tensor(0.1512, device='cuda:0') tensor(2.7502, device='cuda:0')
+classification loss: tensor(1.2195, device='cuda:0')
+02:51:58 Te=0 Loss=2751.2590 | AccT=92.7734% (475/512) 2750.0872 833.33 8
+advnet: tensor(-0.0680, device='cuda:0') tensor(1.1843, device='cuda:0') tensor(2.7369, device='cuda:0')
+classification loss: tensor(1.0400, device='cuda:0')
+02:51:59 Te=0 Loss=2746.4443 | AccT=92.0573% (707/768) 2736.8147 681.82 12
+advnet: tensor(-0.1253, device='cuda:0') tensor(6.1988, device='cuda:0') tensor(2.6746, device='cuda:0')
+classification loss: tensor(1.0940, device='cuda:0')
+02:52:00 Te=0 Loss=2728.4485 | AccT=90.5273% (927/1024) 2674.4607 576.92 16
+advnet: tensor(-0.1395, device='cuda:0') tensor(21.4348, device='cuda:0') tensor(2.4921, device='cuda:0')
+classification loss: tensor(1.1546, device='cuda:0')
+02:52:01 Te=0 Loss=2681.1628 | AccT=89.8438% (1150/1280) 2492.0208 500.00 20
+advnet: tensor(-0.0557, device='cuda:0') tensor(37.2115, device='cuda:0') tensor(2.3013, device='cuda:0')
+classification loss: tensor(1.0552, device='cuda:0')
+02:52:02 Te=0 Loss=2617.8438 | AccT=90.1042% (1384/1536) 2301.2483 441.18 24
+advnet: tensor(-0.1034, device='cuda:0') tensor(54.5439, device='cuda:0') tensor(2.0778, device='cuda:0')
+classification loss: tensor(1.0524, device='cuda:0')
+02:52:10 Te=0 Loss=2540.6826 | AccT=89.8996% (1611/1792) 2077.7146 394.74 28
+advnet: tensor(-0.1077, device='cuda:0') tensor(82.4328, device='cuda:0') tensor(1.6434, device='cuda:0')
+classification loss: tensor(1.0556, device='cuda:0')
+02:52:11 Te=0 Loss=2428.5210 | AccT=89.5996% (1835/2048) 1643.3898 357.14 32
+advnet: tensor(-0.0774, device='cuda:0') tensor(88.8519, device='cuda:0') tensor(0.7028, device='cuda:0')
+classification loss: tensor(1.0245, device='cuda:0')
+02:52:12 Te=0 Loss=2236.7727 | AccT=89.5833% (2064/2304) 702.7863 326.09 36
+advnet: tensor(-0.0633, device='cuda:0') tensor(52.4002, device='cuda:0') tensor(0.4137, device='cuda:0')
+classification loss: tensor(0.9854, device='cuda:0')
+02:52:13 Te=0 Loss=2054.4690 | AccT=89.7656% (2298/2560) 413.7336 300.00 40
+advnet: tensor(-0.1105, device='cuda:0') tensor(31.1395, device='cuda:0') tensor(0.3340, device='cuda:0')
+classification loss: tensor(0.9965, device='cuda:0')
+02:52:14 Te=0 Loss=1898.0518 | AccT=89.3821% (2517/2816) 333.8784 277.78 44
+advnet: tensor(-0.0974, device='cuda:0') tensor(15.8446, device='cuda:0') tensor(0.0971, device='cuda:0')
+classification loss: tensor(0.9947, device='cuda:0')
+02:52:16 Te=0 Loss=1747.9619 | AccT=89.2253% (2741/3072) 96.9744 258.62 48
+
+advnet: tensor(-0.0798, device='cuda:0') tensor(1.3156, device='cuda:0') tensor(0.0083, device='cuda:0')
+classification loss: tensor(0.9797, device='cuda:0')
+02:52:26 Te=0 Loss=1614.1393 | AccT=89.2728% (2971/3328) 8.2669 241.94 52
+advnet: tensor(-0.1170, device='cuda:0') tensor(0.2216, device='cuda:0') tensor(0.0016, device='cuda:0')
+classification loss: tensor(0.9934, device='cuda:0')
+02:52:27 Te=0 Loss=1498.9464 | AccT=88.9230% (3187/3584) 1.4374 227.27 56
+advnet: tensor(-0.0951, device='cuda:0') tensor(0.0564, device='cuda:0') tensor(0.0004, device='cuda:0')
+classification loss: tensor(0.9907, device='cuda:0')
+02:52:28 Te=0 Loss=1399.0391 | AccT=88.7500% (3408/3840) 0.3354 214.29 60
+advnet: tensor(-0.0985, device='cuda:0') tensor(0.1875, device='cuda:0') tensor(0.0013, device='cuda:0')
+classification loss: tensor(0.9904, device='cuda:0')
+02:52:29 Te=0 Loss=1311.6770 | AccT=88.6230% (3630/4096) 1.2485 202.70 64
+advnet: tensor(-0.1063, device='cuda:0') tensor(0.3050, device='cuda:0') tensor(0.0021, device='cuda:0')
+classification loss: tensor(0.9948, device='cuda:0')
+02:52:29 Te=0 Loss=1234.6353 | AccT=88.5340% (3853/4352) 1.9671 192.31 68
+advnet: tensor(-0.0842, device='cuda:0') tensor(0.3716, device='cuda:0') tensor(0.0024, device='cuda:0')
+classification loss: tensor(0.9864, device='cuda:0')
+02:52:30 Te=0 Loss=1166.1757 | AccT=88.4549% (4076/4608) 2.3625 182.93 72
+
+advnet: tensor(-0.0752, device='cuda:0') tensor(1.0029, device='cuda:0') tensor(0.0059, device='cuda:0')
+classification loss: tensor(0.9742, device='cuda:0')
+02:52:38 Te=0 Loss=1105.1071 | AccT=88.4663% (4303/4864) 5.8709 174.42 76
+advnet: tensor(-0.0949, device='cuda:0') tensor(1.4601, device='cuda:0') tensor(0.0123, device='cuda:0')
+classification loss: tensor(0.9730, device='cuda:0')
+02:52:39 Te=0 Loss=1050.4624 | AccT=88.4375% (4528/5120) 12.2152 166.67 80
+advnet: tensor(-0.0736, device='cuda:0') tensor(6.3299, device='cuda:0') tensor(0.0452, device='cuda:0')
+classification loss: tensor(0.9618, device='cuda:0')
+02:52:40 Te=0 Loss=1002.5898 | AccT=88.6347% (4765/5376) 45.1388 159.57 84
+advnet: tensor(-0.0931, device='cuda:0') tensor(10.9137, device='cuda:0') tensor(0.1207, device='cuda:0')
+classification loss: tensor(0.9605, device='cuda:0')
+02:52:41 Te=0 Loss=962.5018 | AccT=88.6364% (4992/5632) 120.6518 153.06 88
+advnet: tensor(-0.1169, device='cuda:0') tensor(26.3172, device='cuda:0') tensor(0.9507, device='cuda:0')
+classification loss: tensor(0.9696, device='cuda:0')
+02:52:42 Te=0 Loss=961.9827 | AccT=88.4851% (5210/5888) 950.5616 147.06 92
+advnet: tensor(-0.2598, device='cuda:0') tensor(0., device='cuda:0') tensor(0., device='cuda:0')
+classification loss: tensor(1.0378, device='cuda:0')
+02:52:43 Te=0 Loss=921.8893 | AccT=87.6302% (5384/6144) -0.2602 141.51 96
+
+advnet: tensor(-0.5970, device='cuda:0') tensor(0., device='cuda:0') tensor(0., device='cuda:0')
+classification loss: tensor(1.2356, device='cuda:0')
+02:52:54 Te=0 Loss=884.9897 | AccT=85.5156% (5473/6400) -0.5977 136.36 100
+advnet: tensor(-0.4221, device='cuda:0') tensor(0., device='cuda:0') tensor(0., device='cuda:0')
+classification loss: tensor(1.3507, device='cuda:0')
+02:52:55 Te=0 Loss=850.9355 | AccT=83.7139% (5572/6656) -0.4225 131.58 104
+advnet: tensor(-0.2942, device='cuda:0') tensor(0., device='cuda:0') tensor(0., device='cuda:0')
+classification loss: tensor(1.4098, device='cuda:0')
+02:52:56 Te=0 Loss=819.4084 | AccT=83.4491% (5768/6912) -0.2944 127.12 108
+advnet: tensor(-0.2434, device='cuda:0') tensor(4.9174e-10, device='cuda:0') tensor(4.0531e-12, device='cuda:0')
+classification loss: tensor(1.4465, device='cuda:0')
+02:52:57 Te=0 Loss=790.1351 | AccT=83.0218% (5951/7168) -0.2436 122.95 112
+advnet: tensor(-0.2055, device='cuda:0') tensor(0., device='cuda:0') tensor(8.3447e-13, device='cuda:0')
+classification loss: tensor(1.4676, device='cuda:0')
+02:52:57 Te=0 Loss=762.8820 | AccT=82.7317% (6142/7424) -0.2057 119.05 116
+advnet: tensor(-3.3574, device='cuda:0') tensor(2.5591, device='cuda:0') tensor(0.0874, device='cuda:0')
+classification loss: tensor(2.5390, device='cuda:0')
+02:52:58 Te=0 Loss=740.2526 | AccT=79.9740% (6142/7680) 83.9974 115.38 120
+advnet: tensor(-921.1806, device='cuda:0') tensor(0., device='cuda:0') tensor(0., device='cuda:0')
+classification loss: tensor(299.7448, device='cuda:0')
+02:53:09 Te=0 Loss=686.6512 | AccT=77.3941% (6142/7936) -921.3864 111.94 124
+advnet: tensor(nan, device='cuda:0') tensor(0., device='cuda:0') tensor(5.5050, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:10 Te=0 Loss=nan | AccT=74.9756% (6142/8192) nan 108.70 128
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:11 Te=0 Loss=nan | AccT=72.7036% (6142/8448) nan 105.63 132
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:12 Te=0 Loss=nan | AccT=70.5653% (6142/8704) nan 102.74 136
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:13 Te=0 Loss=nan | AccT=68.5491% (6142/8960) nan 100.00 140
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:14 Te=0 Loss=nan | AccT=66.6450% (6142/9216) nan 97.40 144
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:20 Te=0 Loss=nan | AccT=64.8438% (6142/9472) nan 94.94 148
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:21 Te=0 Loss=nan | AccT=63.1373% (6142/9728) nan 92.59 152
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:21 Te=0 Loss=nan | AccT=61.5184% (6142/9984) nan 90.36 156
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:23 Te=0 Loss=nan | AccT=59.9805% (6142/10240) nan 88.24 160
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:24 Te=0 Loss=nan | AccT=58.5175% (6142/10496) nan 86.21 164
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:27 Te=0 Loss=nan | AccT=57.1243% (6142/10752) nan 84.27 168
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:31 Te=0 Loss=nan | AccT=55.7958% (6142/11008) nan 82.42 172
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:32 Te=0 Loss=nan | AccT=54.5277% (6142/11264) nan 80.65 176
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:33 Te=0 Loss=nan | AccT=53.3160% (6142/11520) nan 78.95 180
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:34 Te=0 Loss=nan | AccT=52.1569% (6142/11776) nan 77.32 184
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:36 Te=0 Loss=nan | AccT=51.0472% (6142/12032) nan 75.76 188
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:39 Te=0 Loss=nan | AccT=49.9837% (6142/12288) nan 74.26 192
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:44 Te=0 Loss=nan | AccT=48.9636% (6142/12544) nan 72.82 196
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:45 Te=0 Loss=nan | AccT=47.9844% (6142/12800) nan 71.43 200
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:46 Te=0 Loss=nan | AccT=47.0435% (6142/13056) nan 70.09 204
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:47 Te=0 Loss=nan | AccT=46.1388% (6142/13312) nan 68.81 208
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:48 Te=0 Loss=nan | AccT=45.2683% (6142/13568) nan 67.57 212
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:52 Te=0 Loss=nan | AccT=44.4300% (6142/13824) nan 66.37 216
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:56 Te=0 Loss=nan | AccT=43.6222% (6142/14080) nan 65.22 220
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:57 Te=0 Loss=nan | AccT=42.8432% (6142/14336) nan 64.10 224
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:58 Te=0 Loss=nan | AccT=42.0916% (6142/14592) nan 63.03 228
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:59 Te=0 Loss=nan | AccT=41.3658% (6142/14848) nan 61.98 232
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:53:59 Te=0 Loss=nan | AccT=40.6647% (6142/15104) nan 60.98 236
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:03 Te=0 Loss=nan | AccT=39.9870% (6142/15360) nan 60.00 240
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:07 Te=0 Loss=nan | AccT=39.3315% (6142/15616) nan 59.06 244
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:08 Te=0 Loss=nan | AccT=38.6971% (6142/15872) nan 58.14 248
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:08 Te=0 Loss=nan | AccT=38.0828% (6142/16128) nan 57.25 252
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:09 Te=0 Loss=nan | AccT=37.4878% (6142/16384) nan 56.39 256
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:10 Te=0 Loss=nan | AccT=36.9111% (6142/16640) nan 55.56 260
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:15 Te=0 Loss=nan | AccT=36.3518% (6142/16896) nan 54.74 264
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:19 Te=0 Loss=nan | AccT=35.8092% (6142/17152) nan 53.96 268
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+classification loss: tensor(nan, device='cuda:0')
+02:54:20 Te=0 Loss=nan | AccT=35.2826% (6142/17408) nan 53.19 272
+advnet: tensor(nan, device='cuda:0') tensor(nan, device='cuda:0') tensor(nan, device='cuda:0')
+^CProcess Process-5:
+Process Process-4:
+Traceback (most recent call last):
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 267, in _bootstrap
+Traceback (most recent call last):
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 267, in _bootstrap
+Process Process-3:
+Traceback (most recent call last):
+Process Process-2:
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 267, in _bootstrap
+Process Process-1:
+Traceback (most recent call last):
+Process Process-6:
+Traceback (most recent call last):
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 267, in _bootstrap
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 267, in _bootstrap
+Traceback (most recent call last):
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 267, in _bootstrap
+    self.run()
+    self.run()
+    self.run()
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 114, in run
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+    self.run()
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 114, in run
+  File "/nfs/153/gpu/amands/sphereface_pytorch/dataset.py", line 38, in dataset_handle
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/nfs/153/gpu/amands/sphereface_pytorch/dataset.py", line 38, in dataset_handle
+    self.run()
+    self._target(*self._args, **self._kwargs)
+    self._target(*self._args, **self._kwargs)
+  File "/nfs/153/gpu/amands/sphereface_pytorch/dataset.py", line 38, in dataset_handle
+  File "/nfs/153/gpu/amands/sphereface_pytorch/dataset.py", line 38, in dataset_handle
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/nfs/153/gpu/amands/sphereface_pytorch/dataset.py", line 38, in dataset_handle
+    self.run()
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/nfs/153/gpu/amands/sphereface_pytorch/dataset.py", line 38, in dataset_handle
+    data = callback(name,filename,pindex,cacheobj,zfile)
+  File "train.py", line 57, in dataset_load
+    data = callback(name,filename,pindex,cacheobj,zfile)
+    data = callback(name,filename,pindex,cacheobj,zfile)
+  File "train.py", line 57, in dataset_load
+  File "train.py", line 57, in dataset_load
+    data = callback(name,filename,pindex,cacheobj,zfile)
+  File "train.py", line 57, in dataset_load
+    data = callback(name,filename,pindex,cacheobj,zfile)
+  File "train.py", line 57, in dataset_load
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 958, in read
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 958, in read
+    data = callback(name,filename,pindex,cacheobj,zfile)
+  File "train.py", line 57, in dataset_load
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 958, in read
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 958, in read
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 958, in read
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 958, in read
+    return self.open(name, "r", pwd).read()
+    return self.open(name, "r", pwd).read()
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 974, in open
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 989, in open
+    return self.open(name, "r", pwd).read()
+    fheader = zef_file.read(sizeFileHeader)
+  File "/users/gpu/amands/miniconda2/envs/sphereface/lib/python2.7/zipfile.py", line 974, in open
+    zef_file = open(self.filename, 'rb')
+KeyboardInterrupt
+    r
