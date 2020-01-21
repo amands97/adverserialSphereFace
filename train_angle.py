@@ -1,5 +1,5 @@
 # CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
-
+# train with the cross entropy loss
 
 from __future__ import print_function
 
@@ -132,18 +132,14 @@ def train(epoch,args):
         mask = maskNet(features)
         maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(maskedFeatures)
-        outputs = outputs[0] # 0=cos_theta 1=phi_theta
-        _, predicted = torch.max(outputs.data, 1)
-        total += targets.size(0)
-        correct += predicted.eq(targets.data).cpu().sum()
-        
+
         # training the advNet:
         lossAdv = criterion(outputs, targets)
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
-        print("advnet:", - criterion2(outputs, targets).data/10, lossCompact.data/1000, lossSize.data/1000000)
-        loss = - criterion2(outputs, targets)/10 + lossCompact/1000000 + lossSize/1000
+        print("advnet:", - criterion(outputs, targets).data/10, lossCompact.data/1000, lossSize.data/1000000)
+        loss = - criterion(outputs, targets)/10 + lossCompact/1000000 + lossSize/1000
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
@@ -155,7 +151,10 @@ def train(epoch,args):
         optimizerFC.step()
         classification_loss += lossClassification
         train_loss += loss.data
-
+        outputs = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs.data, 1)
+        total += targets.size(0)
+        correct += predicted.eq(targets.data).cpu().sum()
         print("classification loss:", classification_loss / (batch_idx + 1))
         printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d\n'
             % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
@@ -198,7 +197,7 @@ criterion = net_sphere.AngleLoss()
 optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/1000, momentum=0.9, weight_decay=5e-4)
-criterion2 = torch.nn.CrossEntropyLoss()
+        
 
 print('start: time={}'.format(dt()))
 for epoch in range(0, 50):

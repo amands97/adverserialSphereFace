@@ -1,0 +1,18 @@
+
+directions:
+try changing the loss to classification loss
+
+try using different dataset
+
+
+try on datasets with actual ovvluded faces especially
+how to account for at least some masking of pixels
+
+check if the mask is actullay doing something
+
+
+check loss of astn
+
+
+
+visualize the masks
