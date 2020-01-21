@@ -27,6 +27,7 @@ parser.add_argument('--net','-n', default='sphere20a', type=str)
 parser.add_argument('--dataset', default='../../dataset/face/casia/casia.zip', type=str)
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
 parser.add_argument('--bs', default=256, type=int, help='')
+parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
@@ -162,16 +163,28 @@ def train(epoch,args):
         # break
     print('')
 
+if checkpoint == -1:
+    featureNet = getattr(net_sphere,args.net)()
 
-featureNet = getattr(net_sphere,args.net)()
-featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 
-maskNet = getattr(adversary, "MaskMan")(512)
-fcNet = getattr(net_sphere, "fclayers")()
-pretrainedDict = torch.load('model/sphere20a_20171020.pth')
-fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-fcNet.load_state_dict(fcDict)
-laplacianKernel = getKernel()
+    maskNet = getattr(adversary, "MaskMan")(512)
+    fcNet = getattr(net_sphere, "fclayers")()
+    pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+    fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+    fcNet.load_state_dict(fcDict)
+    laplacianKernel = getKernel()
+else:
+    featureNet = getattr(net_sphere,args.net)()
+    featureNet.load_state_dict(torch.load('saved_models/featureNet_' + str(checkpoint) + '.pth'))
+
+    maskNet = getattr(adversary, "MaskMan")(512)
+    maskNet.load_state_dict(torch.load('saved_models/maskNet_' + str(checkpoint) + '.pth'))
+    fcNet = getattr(net_sphere, "fclayers")()
+    # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+    # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+    fcNet.load_state_dict(torch.load('saved_models/fcNet_'+ str(checkpoint)+ '.pth'))
+    laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
 if torch.cuda.is_available():
@@ -184,8 +197,10 @@ criterion = net_sphere.AngleLoss()
 
 
 print('start: time={}'.format(dt()))
-for epoch in range(0, 20):
-    if epoch in [0,10,15,18]:
+for epoch in range(0, 50):
+    if checkpoint >= epoch:
+        continue
+    if epoch in [0,10,15,18, 24, 28, 35]:
         if epoch!=0: args.lr *= 0.1
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
