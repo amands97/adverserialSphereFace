@@ -133,9 +133,9 @@ for i in range(6000):
     img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
     # output = net(img)
     output = featureNet(img)
-    print(output)
+    # print(output)
     output = fcNet(output)
-    print(output)
+    # print(output)
     f = output.data
     f1,f2 = f[0],f[2]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
