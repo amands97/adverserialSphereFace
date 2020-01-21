@@ -69,11 +69,31 @@ parser.add_argument('--model','-m', default='sphere20a.pth', type=str)
 args = parser.parse_args()
 
 predicts=[]
-net = getattr(net_sphere,args.net)()
-net.load_state_dict(torch.load(args.model))
-net.cuda()
-net.eval()
-net.feature = True
+
+
+
+featureNet = getattr(net_sphere,args.net)()
+featureNet.load_state_dict(torch.load('saved_models/featureNet_19.pth'))
+featureNet.cuda()
+featureNet.eval()
+
+# we dont need maskNet here right?
+# maskNet = getattr(adversary, "MaskMan")(512)
+# maskNet.load_state_dict(torch.load("saved_models/maskNet_19.pth"))
+# maskNet.cuda()
+# maskNet.eval()
+
+fcNet = getattr(net_sphere, "fclayers")()
+fcNet.load_state_dict(torch.load("saved_models/fcNet_19.pth"))
+fcNet.cuda()
+fcNet.featureNet = True
+fcNet.eval()
+
+# net = getattr(net_sphere,args.net)()
+# net.load_state_dict(torch.load(args.model))
+# net.cuda()
+# net.eval()
+# net.feature = True
 
 zfile = zipfile.ZipFile(args.lfw)
 # print(zfile)
@@ -111,7 +131,9 @@ for i in range(6000):
 
     img = np.vstack(imglist)
     img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
-    output = net(img)
+    # output = net(img)
+    output = featureNet(img)
+    output = fcNet(output)
     f = output.data
     f1,f2 = f[0],f[2]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
