@@ -163,7 +163,7 @@ def train(epoch,args):
         # break
     print('')
 
-if checkpoint == -1:
+if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
     featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
@@ -176,14 +176,14 @@ if checkpoint == -1:
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
-    featureNet.load_state_dict(torch.load('saved_models/featureNet_' + str(checkpoint) + '.pth'))
+    featureNet.load_state_dict(torch.load('saved_models/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")(512)
-    maskNet.load_state_dict(torch.load('saved_models/maskNet_' + str(checkpoint) + '.pth'))
+    maskNet.load_state_dict(torch.load('saved_models/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(torch.load('saved_models/fcNet_'+ str(checkpoint)+ '.pth'))
+    fcNet.load_state_dict(torch.load('saved_models/fcNet_'+ str(args.checkpoint)+ '.pth'))
     laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
@@ -198,7 +198,7 @@ criterion = net_sphere.AngleLoss()
 
 print('start: time={}'.format(dt()))
 for epoch in range(0, 50):
-    if checkpoint >= epoch:
+    if args.checkpoint >= epoch:
         continue
     if epoch in [0,10,15,18, 24, 28, 35]:
         if epoch!=0: args.lr *= 0.1

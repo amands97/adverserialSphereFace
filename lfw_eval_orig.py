@@ -1,3 +1,4 @@
+# CUDA_VISIBLE_DEVICES=2 python lfw_eval_orig.py --lfw lfw.zip --model model/sphere20a_20171020.pth
 from __future__ import print_function
 
 import torch

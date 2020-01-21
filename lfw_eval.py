@@ -1,3 +1,4 @@
+# CUDA_VISIBLE_DEVICES=1 python lfw_eval.py --lfw lfw.zip --epoch_num 2
 from __future__ import print_function
 
 import torch
