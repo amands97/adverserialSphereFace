@@ -132,8 +132,8 @@ def train(epoch,args):
         mask = maskNet(features)
         maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(maskedFeatures)
-        outputs = outputs[0] # 0=cos_theta 1=phi_theta
-        _, predicted = torch.max(outputs.data, 1)
+        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs1.data, 1)
         total += targets.size(0)
         correct += predicted.eq(targets.data).cpu().sum()
         
@@ -142,8 +142,8 @@ def train(epoch,args):
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
-        print("advnet:", - criterion2(outputs, targets).data/10, lossCompact.data/1000, lossSize.data/1000000)
-        loss = - criterion2(outputs, targets)/10 + lossCompact/1000000 + lossSize/1000
+        print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000, lossSize.data/1000000)
+        loss = - criterion2(outputs1, targets)/10 + lossCompact/1000000 + lossSize/1000
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
@@ -177,14 +177,14 @@ if args.checkpoint == -1:
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
-    featureNet.load_state_dict(torch.load('saved_models/featureNet_' + str(args.checkpoint) + '.pth'))
+    featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")(512)
-    maskNet.load_state_dict(torch.load('saved_models/maskNet_' + str(args.checkpoint) + '.pth'))
+    maskNet.load_state_dict(torch.load('saved_models_ce/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(torch.load('saved_models/fcNet_'+ str(args.checkpoint)+ '.pth'))
+    fcNet.load_state_dict(torch.load('saved_models_ce/fcNet_'+ str(args.checkpoint)+ '.pth'))
     laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
@@ -211,9 +211,9 @@ for epoch in range(0, 50):
         continue
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
-    save_model(featureNet, 'saved_models/featureNet_{}.pth'.format(epoch))
-    save_model(maskNet, 'saved_models/maskNet_{}.pth'.format(epoch))
-    save_model(fcNet, 'saved_models/fcNet_{}.pth'.format(epoch))
+    save_model(featureNet, 'saved_models_ce/featureNet_{}.pth'.format(epoch))
+    save_model(maskNet, 'saved_models_ce/maskNet_{}.pth'.format(epoch))
+    save_model(fcNet, 'saved_models_ce/fcNet_{}.pth'.format(epoch))
 
 print('finish: time={}\n'.format(dt()))
 
