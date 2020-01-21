@@ -86,7 +86,7 @@ featureNet.eval()
 fcNet = getattr(net_sphere, "fclayers")()
 fcNet.load_state_dict(torch.load("saved_models/fcNet_19.pth"))
 fcNet.cuda()
-fcNet.featureNet = True
+fcNet.feature = True
 fcNet.eval()
 
 # net = getattr(net_sphere,args.net)()
