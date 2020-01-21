@@ -133,6 +133,7 @@ for i in range(6000):
     img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
     # output = net(img)
     output = featureNet(img)
+    print(output)
     output = fcNet(output)
     print(output)
     f = output.data
