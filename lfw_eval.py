@@ -66,6 +66,7 @@ parser = argparse.ArgumentParser(description='PyTorch sphereface lfw')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
 parser.add_argument('--lfw', default='lfw/lfw.zip', type=str)
 parser.add_argument('--model','-m', default='sphere20a.pth', type=str)
+parser.add_argument('--epoch_num', type=str)
 args = parser.parse_args()
 
 predicts=[]
@@ -73,7 +74,7 @@ predicts=[]
 
 
 featureNet = getattr(net_sphere,args.net)()
-featureNet.load_state_dict(torch.load('saved_models/featureNet_19.pth'))
+featureNet.load_state_dict(torch.load('saved_models/featureNet_' + args.epoch_num + '.pth'))
 featureNet.cuda()
 featureNet.eval()
 
@@ -84,7 +85,7 @@ featureNet.eval()
 # maskNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
-fcNet.load_state_dict(torch.load("saved_models/fcNet_19.pth"))
+fcNet.load_state_dict(torch.load("saved_models/fcNet_"+ args.epoch_num + ".pth"))
 fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
