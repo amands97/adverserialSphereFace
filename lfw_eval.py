@@ -134,6 +134,7 @@ for i in range(6000):
     # output = net(img)
     output = featureNet(img)
     output = fcNet(output)
+    print(output.size)
     f = output.data
     f1,f2 = f[0],f[2]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)

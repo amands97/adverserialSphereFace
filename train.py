@@ -1,3 +1,6 @@
+# CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
+
+
 from __future__ import print_function
 
 import torch
