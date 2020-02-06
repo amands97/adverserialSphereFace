@@ -9,13 +9,12 @@ class MaskMan(nn.Module):
     def __init__(self,  in_features):
         super(MaskMan, self).__init__()
         self.in_features = in_features
-        self.conv1_1 = nn.Conv2d(in_features,in_features,3,1,1) #=>B*64*56*48
-        self.relu1_1 = nn.PReLU(in_features)
-        self.conv1_2 = nn.Conv2d(in_features,in_features,3,1,1)
-        self.relu1_2 = nn.PReLU(in_features)
-        self.conv1_3 = nn.Conv2d(in_features,in_features,3,1,1)
+        self.conv1_1 = nn.Conv2d(in_features,128,3,1,1) #=>B*64*56*48
+        self.relu1_1 = nn.PReLU(128)
+        self.conv1_2 = nn.Conv2d(128,16,3,1,1)
+        self.relu1_2 = nn.PReLU(16)
+        self.conv1_3 = nn.Conv2d(16,1,3,1,1)
         self.sigmoid = nn.Sigmoid()
-        
 
 # a = torch.rand((3,2)).type(torch.DoubleTensor)
 # print(a)
@@ -30,6 +29,7 @@ class MaskMan(nn.Module):
         x = self.relu1_1(self.conv1_1(x))
         x = self.relu1_2(self.conv1_2(x))
         x = self.sigmoid(self.conv1_3(x))
+        #  TODO: change this sigmoid
         # do the multilpication in the main part of the function
         # x = torch.mul(x, x_) 
         return x

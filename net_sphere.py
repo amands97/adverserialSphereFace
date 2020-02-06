@@ -97,7 +97,7 @@ class fclayers(nn.Module):
         self.fc6 = AngleLinear(512, classnum)
         self.feature = feature
     def forward(self, x):
-        x = x.view(x.size(0),-1)
+        x = x.contiguous().view(x.size(0),-1)
         x = self.fc5(x)
         if self.feature: return x
         x = self.fc6(x)

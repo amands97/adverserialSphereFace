@@ -20,6 +20,7 @@ from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
 import adversary
+from gumbel import gumbel_softmax
 from torch.nn.functional import conv2d # for the kernel
 
 parser = argparse.ArgumentParser(description='PyTorch sphereface')
@@ -103,7 +104,7 @@ def getKernel():
     kernel[1, 1] = -8
     kernel = kernel/-8
     # b, c, h, w = x.shape (hard coded here)
-    b, c, h, w = (1,512, 7, 6)
+    b, c, h, w = (1,1, 7, 6)
     kernel = kernel.type(torch.FloatTensor)
     kernel = kernel.repeat(c, 1, 1, 1)
     return kernel
@@ -130,7 +131,11 @@ def train(epoch,args):
         inputs, targets = Variable(inputs), Variable(targets)
         features = featureNet(inputs)
         mask = maskNet(features)
+        mask = gumbel_softmax(mask)
+        print(mask.size())
         maskedFeatures = torch.mul(mask, features)
+        print(features.shape, mask.shape, maskedFeatures.shape)
+
         outputs = fcNet(maskedFeatures)
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs1.data, 1)
@@ -139,9 +144,13 @@ def train(epoch,args):
         
         # training the advNet:
         lossAdv = criterion(outputs, targets)
-        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=512))
+        print(conv2d(mask, laplacianKernel, stride=1, groups=1).size())
+        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         # lossSize   #L1 norm of the mask to make the mask sparse.
-        lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
+        if use_cuda:
+            lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
+        else:
+            lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
         print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000000, lossSize.data/10000)
         loss = - criterion2(outputs1, targets)/10 + lossCompact/1000000 + lossSize/10000
         lossd = loss.data
@@ -188,7 +197,7 @@ else:
     laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
-if torch.cuda.is_available():
+if use_cuda:
     featureNet.cuda()
     maskNet.cuda()
     fcNet.cuda()

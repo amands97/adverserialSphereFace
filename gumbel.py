@@ -1,7 +1,7 @@
 import torch
 
 
-def gumbel_softmax(logits, tau=1, dim=-1):
+def gumbel_softmax(logits1, tau=1, dim=-1):
     # type: (Tensor, float, bool, float, int) -> Tensor
     r"""
     Samples from the Gumbel-Softmax distribution (`Link 1`_  `Link 2`_) and optionally discretizes.
@@ -36,6 +36,7 @@ def gumbel_softmax(logits, tau=1, dim=-1):
         https://arxiv.org/abs/1611.01144
     """
     # - log (u_i) is effectively a sample from exponential distribution
+    logits = torch.stack((logits1, 1- logits1), -1)
     gumbels = -torch.empty_like(logits, memory_format=torch.legacy_contiguous_format).exponential_().log()  # ~Gumbel(0,1)
     gumbels = (logits + gumbels) / tau  # ~Gumbel(logits,tau)
     y_soft = gumbels.softmax(dim)
@@ -45,29 +46,21 @@ def gumbel_softmax(logits, tau=1, dim=-1):
     index = y_soft.max(dim, keepdim=True)[1]
     # print(index.shape)
     
-    print(index)
+    # print(index)
     y_hard = torch.zeros_like(logits, memory_format=torch.legacy_contiguous_format).scatter_(dim, index, 1.0)
     ret = y_hard - y_soft.detach() + y_soft
     # print(ret[])
-    print(ret)
-    print(ret[:, 0])
-    return ret[:, 0]
+    # print(ret.shape)
+    # print(ret[:, :, :, :,  0].shape)
+    # print(ret[0, 0, :, :, 0 ])
+    return ret[..., 0]
 
-def gumbel_bernoulli(logits, tau=1, dim = -1):
-    gumbels = -torch.empty_like(logits, memory_format=torch.legacy_contiguous_format).exponential_().log() # ~Gumbel(0,1)
-    gumbels = (logits + gumbels)/tau  # ~Gumbel(logits,tau)
-    # y_soft = gu
-    print(gumbels)
-    y_soft = gumbels.softmax(dim)
-    print(y_soft)
-    index = y_soft.max(dim, keepdim=True)[1]
-    # stack with zeros
+# logits = torch.randn((256, 1, 7, 6))
+# print(logits[0, 0, :, :])
 
-    print(index)
-
-logits = torch.randn(3)
-logits2 = torch.stack((logits, 1- logits), -1)
-
-print(logits2)
-gumbel_softmax(logits2)
+# print(logits2)
+# a = gumbel_softmax(logits)
+# print(a[0, 0])
+# print(logits.shape, a.shape)
+# print((logits * a)[0, 0])
 # gumbel_bernoulli(logits2)
