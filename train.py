@@ -22,7 +22,7 @@ import net_sphere
 import adversary
 from gumbel import gumbel_softmax
 from torch.nn.functional import conv2d # for the kernel
-
+from torch.utils.tensorboard import SummaryWriter
 parser = argparse.ArgumentParser(description='PyTorch sphereface')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
 parser.add_argument('--dataset', default='../../dataset/face/casia/casia.zip', type=str)
