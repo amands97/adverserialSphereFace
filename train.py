@@ -120,7 +120,9 @@ def train(epoch,args):
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
+
     while True:
+        n_iter += 1
         img,label = ds.get()
         if img is None: break
         inputs = torch.from_numpy(img).float()
@@ -132,9 +134,9 @@ def train(epoch,args):
         features = featureNet(inputs)
         mask = maskNet(features)
         mask = gumbel_softmax(mask)
-        print(mask.size())
+        # print(mask.size())
         maskedFeatures = torch.mul(mask, features)
-        print(features.shape, mask.shape, maskedFeatures.shape)
+        # print(features.shape, mask.shape, maskedFeatures.shape)
 
         outputs = fcNet(maskedFeatures)
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
@@ -144,7 +146,7 @@ def train(epoch,args):
         
         # training the advNet:
         lossAdv = criterion(outputs, targets)
-        print(conv2d(mask, laplacianKernel, stride=1, groups=1).size())
+        # print(conv2d(mask, laplacianKernel, stride=1, groups=1).size())
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         # lossSize   #L1 norm of the mask to make the mask sparse.
         if use_cuda:
@@ -152,7 +154,11 @@ def train(epoch,args):
         else:
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
         print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000000, lossSize.data/10000)
+        writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/10 , n_iter)
+        writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
+        writer.add_scalar('Loss/adv-size', lossSize/10000, n_iter)
         loss = - criterion2(outputs1, targets)/10 + lossCompact/1000000 + lossSize/10000
+        writer.add_scalar('Accuracy/adv-totalLoss', loss), n_iter)
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
@@ -166,13 +172,21 @@ def train(epoch,args):
         train_loss += loss.data
 
         print("classification loss:", classification_loss / (batch_idx + 1))
+        writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
+        writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
         printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d\n'
             % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
             lossd, criterion.lamb, criterion.it))
+        writer.add_scalar('Accuracy/classification', 100* correct/total, n_iter)
+        # writer.add_scalar
+        writer.add_scalar('Accuracy/correct', correct, n_iter)
         batch_idx += 1
         # break
     print('')
 
+
+writer = SummaryWriter()
+n_iter = 0
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
