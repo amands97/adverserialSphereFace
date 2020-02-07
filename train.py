@@ -156,7 +156,7 @@ def train(epoch,args):
         else:
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
         # print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000000, lossSize.data/10000)
-        writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/10 , n_iter)
+        writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/100 , n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/10000, n_iter)
         loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
