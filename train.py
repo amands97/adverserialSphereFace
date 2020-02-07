@@ -32,6 +32,8 @@ parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoin
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
+writer = SummaryWriter()
+n_iter = 0
 
 def alignment(src_img,src_pts):
     of = 2
@@ -120,7 +122,7 @@ def train(epoch,args):
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
-
+    global n_iter
     while True:
         n_iter += 1
         img,label = ds.get()
@@ -153,12 +155,12 @@ def train(epoch,args):
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
         else:
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
-        print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000000, lossSize.data/10000)
+        # print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000000, lossSize.data/10000)
         writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/10 , n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/10000, n_iter)
         loss = - criterion2(outputs1, targets)/10 + lossCompact/1000000 + lossSize/10000
-        writer.add_scalar('Accuracy/adv-totalLoss', loss), n_iter)
+        writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
@@ -171,12 +173,12 @@ def train(epoch,args):
         classification_loss += lossClassification
         train_loss += loss.data
 
-        print("classification loss:", classification_loss / (batch_idx + 1))
+        # print("classification loss:", classification_loss / (batch_idx + 1))
         writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
         writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
-        printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d\n'
-            % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
-            lossd, criterion.lamb, criterion.it))
+        # printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d\n'
+            # % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
+            # lossd, criterion.lamb, criterion.it))
         writer.add_scalar('Accuracy/classification', 100* correct/total, n_iter)
         # writer.add_scalar
         writer.add_scalar('Accuracy/correct', correct, n_iter)
@@ -185,8 +187,6 @@ def train(epoch,args):
     print('')
 
 
-writer = SummaryWriter()
-n_iter = 0
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 

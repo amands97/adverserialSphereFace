@@ -55,12 +55,9 @@ def gumbel_softmax(logits1, tau=1, dim=-1):
     # print(ret[0, 0, :, :, 0 ])
     return ret[..., 0]
 
-logits = torch.randn((256, 1, 7, 6))
-# print(logits[0, 0, :, :])
 
-# print(logits2)
-a = gumbel_softmax(logits)
-print(a[0, 0])
-# print(logits.shape, a.shape)
-# print((logits * a)[0, 0])
-# gumbel_bernoulli(logits2)
+# test run
+# logits = torch.randn((256, 1, 7, 6))
+# a = gumbel_softmax(logits)
+# print(a[0, 0])
+# # 
