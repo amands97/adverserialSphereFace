@@ -124,6 +124,9 @@ def train(epoch,args):
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
     global n_iter
     while True:
+        if batch_idx % 100 == 0:
+            print(batch_idx)
+        print(batch_idx)
         n_iter += 1
         img,label = ds.get()
         if img is None: break
@@ -229,7 +232,8 @@ for epoch in range(0, 50):
         if epoch!=0: args.lr *= 0.1
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/1000, momentum=0.9, weight_decay=5e-4)
+        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/10000, momentum=0.9, weight_decay=5e-4)
+        # slowed the lr even more
     if args.checkpoint >= epoch:
         continue
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)

@@ -71,12 +71,13 @@ parser.add_argument('--epoch_num', type=str)
 args = parser.parse_args()
 
 predicts=[]
+use_cuda = torch.cuda.is_available()
 
 
 
 featureNet = getattr(net_sphere,args.net)()
 featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
-featureNet.cuda()
+# featureNet.cuda()
 featureNet.eval()
 
 # we dont need maskNet here right?
@@ -87,10 +88,16 @@ featureNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
 fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
-fcNet.cuda()
+# fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
 
+if use_cuda:
+    featureNet.cuda()
+    fcNet.cuda()
+else:
+    featureNet.cpu()
+    fcNet.cpu()
 # net = getattr(net_sphere,args.net)()
 # net.load_state_dict(torch.load(args.model))
 # net.cuda()
@@ -132,7 +139,11 @@ for i in range(6000):
         imglist[i] = (imglist[i]-127.5)/128.0
 
     img = np.vstack(imglist)
-    img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
+    if use_cuda:
+        img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
+    else:
+        img = Variable(torch.from_numpy(img).float(),volatile=True)
+
     # output = net(img)
     output = featureNet(img)
     # print(output)
