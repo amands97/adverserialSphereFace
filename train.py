@@ -159,7 +159,7 @@ def train(epoch,args):
         writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/10 , n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/10000, n_iter)
-        loss = - criterion2(outputs1, targets)/10 + lossCompact/1000000 + lossSize/10000
+        loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward(retain_graph=True)
