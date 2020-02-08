@@ -167,7 +167,8 @@ def train(epoch,args):
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
-        
+        # set this optimizer mask grad to be zero again
+        optimizerMask.zero_grad()
         optimizerFC.zero_grad()
         lossC = criterion(outputs, targets)
         lossClassification = lossC.data
