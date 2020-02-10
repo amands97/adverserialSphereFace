@@ -152,7 +152,7 @@ def train(epoch,args):
         else:
             correct += predicted.eq(targets.data).sum()
 
-        
+    # TODO: correct on the validation set
         # training the advNet:
         lossAdv = criterion(outputs, targets)
         # print(conv2d(mask, laplacianKernel, stride=1, groups=1).size())

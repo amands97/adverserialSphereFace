@@ -16,3 +16,9 @@ check loss of astn
 
 
 visualize the masks
+
+
+
+
+TODO:
+ you are actually moving  on the loss manifold twice using the same output which is wrong. When you update the classifier the adversary has already moved making the gradietn wrong for the current update.
