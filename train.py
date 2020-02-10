@@ -23,6 +23,8 @@ import adversary
 from gumbel import gumbel_softmax
 from torch.nn.functional import conv2d # for the kernel
 from torch.utils.tensorboard import SummaryWriter
+from aux import *
+# to import all the necessary changes
 parser = argparse.ArgumentParser(description='PyTorch sphereface')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
 parser.add_argument('--dataset', default='../../dataset/face/casia/casia.zip', type=str)
@@ -34,82 +36,6 @@ use_cuda = torch.cuda.is_available()
 
 writer = SummaryWriter()
 n_iter = 0
-
-def alignment(src_img,src_pts):
-    of = 2
-    ref_pts = [ [30.2946+of, 51.6963+of],[65.5318+of, 51.5014+of],
-        [48.0252+of, 71.7366+of],[33.5493+of, 92.3655+of],[62.7299+of, 92.2041+of] ]
-    crop_size = (96+of*2, 112+of*2)
-
-    s = np.array(src_pts).astype(np.float32)
-    r = np.array(ref_pts).astype(np.float32)
-
-    tfm = get_similarity_transform_for_cv2(s, r)
-    face_img = cv2.warpAffine(src_img, tfm, crop_size)
-    return face_img
-
-
-def dataset_load(name,filename,pindex,cacheobj,zfile):
-    position = filename.rfind('.zip:')
-    
-    zipfilename = filename[0:position+4]
-    nameinzip = filename[position+5:]
-    split = nameinzip.split('\t')
-    nameinzip = split[0]
-    classid = int(split[1])
-    src_pts = []
-    for i in range(5):
-        src_pts.append([int(split[2*i+2]),int(split[2*i+3])])
-
-    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
-    img = cv2.imdecode(data,1)
-    img = alignment(img,src_pts)
-
-    if ':train' in name:
-        if random.random()>0.5: img = cv2.flip(img,1)
-        if random.random()>0.5:
-            rx = random.randint(0,2*2)
-            ry = random.randint(0,2*2)
-            img = img[ry:ry+112,rx:rx+96,:]
-        else:
-            img = img[2:2+112,2:2+96,:]
-    else:
-        img = img[2:2+112,2:2+96,:]
-
-
-    img = img.transpose(2, 0, 1).reshape((1,3,112,96))
-    img = ( img - 127.5 ) / 128.0
-    label = np.zeros((1,1),np.float32)
-    label[0,0] = classid
-    return (img,label)
-
-
-def printoneline(*argv):
-    s = ''
-    for arg in argv: s += str(arg) + ' '
-    s = s[:-1]
-    sys.stdout.write('\r'+s)
-    sys.stdout.flush()
-
-def save_model(model,filename):
-    state = model.state_dict()
-    for key in state: state[key] = state[key].clone().cpu()
-    torch.save(state, filename)
-
-def dt():
-    return datetime.datetime.now().strftime('%H:%M:%S')
-
-
-def getKernel():
-    # https://discuss.pytorch.org/t/setting-custom-kernel-for-cnn-in-pytorch/27176/2
-    kernel = torch.ones((3,3))
-    kernel[1, 1] = -8
-    kernel = kernel/-8
-    # b, c, h, w = x.shape (hard coded here)
-    b, c, h, w = (1,1, 7, 6)
-    kernel = kernel.type(torch.FloatTensor)
-    kernel = kernel.repeat(c, 1, 1, 1)
-    return kernel
 
 def train(epoch,args):
     featureNet.train()
@@ -133,16 +59,13 @@ def train(epoch,args):
         inputs = torch.from_numpy(img).float()
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
+        inputs, targets = Variable(inputs), Variable(targets)
 
         optimizerMask.zero_grad()
-        inputs, targets = Variable(inputs), Variable(targets)
         features = featureNet(inputs)
         mask = maskNet(features)
         mask = gumbel_softmax(mask)
-        # print(mask.size())
         maskedFeatures = torch.mul(mask, features)
-        # print(features.shape, mask.shape, maskedFeatures.shape)
-
         outputs = fcNet(maskedFeatures)
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs1.data, 1)
@@ -151,18 +74,12 @@ def train(epoch,args):
             correct += predicted.eq(targets.data).cpu().sum()
         else:
             correct += predicted.eq(targets.data).sum()
-
-    # TODO: correct on the validation set
-        # training the advNet:
         lossAdv = criterion(outputs, targets)
-        # print(conv2d(mask, laplacianKernel, stride=1, groups=1).size())
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
-        # lossSize   #L1 norm of the mask to make the mask sparse.
         if use_cuda:
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
         else:
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
-        # print("advnet:", - criterion2(outputs1, targets).data/10, lossCompact.data/1000000, lossSize.data/10000)
         writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/100 , n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/10000, n_iter)
@@ -171,9 +88,21 @@ def train(epoch,args):
         lossd = loss.data
         loss.backward(retain_graph=True)
         optimizerMask.step()
+
+
+
+        
         # set this optimizer mask grad to be zero again
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
+
+        features = featureNet(inputs)
+        mask = maskNet(features)
+        mask = gumbel_softmax(mask)
+        maskedFeatures = torch.mul(mask, features)
+        outputs = fcNet(maskedFeatures)
+        # outputs1 = outputs[0]
+
         lossC = criterion(outputs, targets)
         lossClassification = lossC.data
         lossC.backward()
