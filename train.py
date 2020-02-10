@@ -80,10 +80,11 @@ def train(epoch,args):
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
         else:
             lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
-        writer.add_scalar('Loss/adv-classification', - criterion2(outputs1, targets)/100 , n_iter)
+        writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/10000, n_iter)
-        loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
+        loss = -lossAdv + lossCompact/1000000 + lossSize/10000
+        # loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()
