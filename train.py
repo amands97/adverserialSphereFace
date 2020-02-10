@@ -86,7 +86,7 @@ def train(epoch,args):
         loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
-        loss.backward(retain_graph=True)
+        loss.backward()
         optimizerMask.step()
 
 
