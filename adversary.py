@@ -34,6 +34,7 @@ class MaskMan(nn.Module):
         self.outc = OutConv(64, n_classes)
 
     def forward(self, x):
+        print(x.shape)
         x1 = self.inc(x)
         x2 = self.down1(x1)
         x3 = self.down2(x2)
