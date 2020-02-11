@@ -64,7 +64,7 @@ def train(epoch,args):
         inputs, targets = Variable(inputs), Variable(targets)
 
         optimizerMask.zero_grad()
-        features = featureNet(inputs)
+        
         mask = maskNet(inputs)
         print(mask.shape)
         mask = gumbel_softmax(mask)
@@ -75,8 +75,9 @@ def train(epoch,args):
         print(maskedFeatures.shape)
         print(maskedFeatures[0, 0])
         # maskedFeatures = torch.mul(mask, features)
-        outputs = fcNet(maskedFeatures)
-        print(outputs)
+        features = featureNet(maskedFeatures)
+        outputs = fcNet(features)
+        print(outputs.shape)
         print("done")
         import sys
         sys.exit()
