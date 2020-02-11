@@ -69,7 +69,7 @@ def train(epoch,args):
 
         outputs = fcNet(featureNet(inputs))
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-        _, predicted2 = torch.max(outputs1.data, 1)
+        _, predicted = torch.max(outputs1.data, 1)
         total2 += targets.size(0)
         if use_cuda:
             correct2 += predicted.eq(targets.data).cpu().sum()
