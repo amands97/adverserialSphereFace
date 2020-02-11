@@ -152,6 +152,8 @@ for i in range(6000):
     mask = maskNet(img)
     mask = gumbel_softmax(mask)
     print(mask.shape)
+    import sys
+    sys.exit()
     output = fcNet(output)
     # print(output)
     f = output.data
