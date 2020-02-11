@@ -117,7 +117,7 @@ def train(epoch,args):
         # printoneline(dt(),'Te=%d Loss=%.4f | AccT=%.4f%% (%d/%d) %.4f %.2f %d\n'
             # % (epoch,train_loss/(batch_idx+1), 100.0*correct/total, correct, total, 
             # lossd, criterion.lamb, criterion.it))
-        writer.add_scalar('Accuracy/classification', 100* correct/total, n_iter)
+        writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
         # writer.add_scalar
         writer.add_scalar('Accuracy/correct', correct, n_iter)
         batch_idx += 1
@@ -128,13 +128,13 @@ def train(epoch,args):
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
-    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+    # featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 
     maskNet = getattr(adversary, "MaskMan")(512)
     fcNet = getattr(net_sphere, "fclayers")()
     pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(fcDict)
+    # fcNet.load_state_dict(fcDict)
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
