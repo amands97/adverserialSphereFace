@@ -65,22 +65,9 @@ def train(epoch,args):
 
         optimizerMask.zero_grad()
         
-        mask = maskNet(inputs)
-        # print(mask.shape)
-        mask = gumbel_softmax(mask)
-        # print(mask.shape)
-        # print(inputs[0, 0])
-        # print(mask[0, 0])
+        mask =gumbel_softmax(maskNet(inputs))
         maskedFeatures = torch.mul(mask, inputs)
-        # print(maskedFeatures.shape)
-        # print(maskedFeatures[0, 0])
-        # maskedFeatures = torch.mul(mask, features)
-        features = featureNet(maskedFeatures)
-        outputs = fcNet(features)
-        # print(outputs)
-        # print("done")
-        # import sys
-        # sys.exit()
+        outputs = fcNet(featureNet(maskedFeatures))
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs1.data, 1)
         total += targets.size(0)
@@ -108,15 +95,13 @@ def train(epoch,args):
 
         
         # set this optimizer mask grad to be zero again
-        optimizerMask.zero_grad()
+        # optimizerMask.zero_grad()
         optimizerFC.zero_grad()
 
-        features = featureNet(inputs)
-        mask = maskNet(features)
-        mask = gumbel_softmax(mask)
-        maskedFeatures = torch.mul(mask, features)
-        outputs = fcNet(maskedFeatures)
-        # outputs1 = outputs[0]
+        mask = gumbel_softmax(maskNet(inputs))
+        maskedFeatures = torch.mul(mask, inputs)
+        outputs = fcNet(featureNet(maskedFeatures))
+
 
         lossC = criterion(outputs, targets)
         lossClassification = lossC.data
