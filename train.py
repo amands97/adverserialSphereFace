@@ -48,8 +48,11 @@ def train(epoch,args):
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
+        # bs=args.bs,shuffle=True,imagesize=128)
+
     global n_iter
     while True:
+        print("here")
         if batch_idx % 100 == 0:
             print(batch_idx)
         print(batch_idx)
@@ -67,6 +70,10 @@ def train(epoch,args):
         mask = gumbel_softmax(mask)
         maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(maskedFeatures)
+        print(outputs)
+        print("done")
+        import sys
+        sys.exit()
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs1.data, 1)
         total += targets.size(0)

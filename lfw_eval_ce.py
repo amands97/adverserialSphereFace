@@ -7,7 +7,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 torch.backends.cudnn.bencmark = True
-
+from torchvision import transforms
 import os,sys,cv2,random,datetime
 import argparse
 import numpy as np
@@ -136,7 +136,13 @@ for i in range(6000):
     print(name2)
     img1 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1),landmark[name1])
     img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
-
+    # print(img1)
+    # from matplotlib import pyplot as plt
+    # plt.imshow(img1)
+    cv2.imwrite("1.jpg", img1)
+    cv2.imwrite("2.jpg", img2) 
+    print(img1.shape)
+    
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     for i in range(len(imglist)):
         imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1,3,112,96))
@@ -154,8 +160,12 @@ for i in range(6000):
     mask = maskNet(output)
     mask = gumbel_softmax(mask)
     print(mask.shape)
+
     for i in range(4):
         print(mask[i, 0])
+        image = transforms.ToPILImage(mode='L')(mask[i])
+        image = image.resize((96, 112))
+        image.save("mask" + str(i)+  ".jpg")
     import sys
     sys.exit()
     output = fcNet(output)
