@@ -45,6 +45,8 @@ def train(epoch,args):
     classification_loss = 0
     correct = 0
     total = 0
+    correct2 = 0
+    total2 = 0
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
