@@ -66,8 +66,8 @@ def train(epoch,args):
         optimizerMask.zero_grad()
         
         mask =gumbel_softmax(maskNet(inputs))
-        if batch_idx % 10 == 0:
-            print(mask[0][0])
+        # if batch_idx % 10 == 0:
+        print(mask[0][0])
         maskedFeatures = torch.mul(mask, inputs)
         outputs = fcNet(featureNet(maskedFeatures))
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
@@ -89,7 +89,7 @@ def train(epoch,args):
         if lossSize/1000000 < 1:
             loss = -lossAdv/10
         else:
-            loss = -lossAdv/10  + lossSize/10000
+            loss = -lossAdv/10  + lossSize/1000000
         
         # loss = -lossAdv/10 + lossCompact/1000000 + lossSize/10
         # loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
