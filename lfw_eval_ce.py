@@ -150,7 +150,7 @@ for i in range(6000):
     # output = net(img)
     output = featureNet(img)
     # print(output)
-    mask = maskNet(img)
+    mask = maskNet(output)
     mask = gumbel_softmax(mask)
     print(mask.shape)
     import sys
