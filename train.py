@@ -98,9 +98,6 @@ def train(epoch,args):
         loss.backward()
         optimizerMask.step()
 
-
-
-        
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
         optimizerFC.zero_grad()
@@ -126,6 +123,16 @@ def train(epoch,args):
         writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
         # writer.add_scalar
         writer.add_scalar('Accuracy/correct', correct, n_iter)
+        
+        outputs = fcNet(featureNet(inputs))
+        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs1.data, 1)
+        total += targets.size(0)
+        if use_cuda:
+            correct2 += predicted.eq(targets.data).cpu().sum()
+        else:
+            correct2 += predicted.eq(targets.data).sum()
+        writer.add_scalar("Accuracy/true", 100 * (correct)/(total * 1.0), n_iter)
         batch_idx += 1
         # break
     print('')
