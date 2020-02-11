@@ -81,7 +81,7 @@ featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch
 featureNet.eval()
 
 # we dont need maskNet here right?
-maskNet = getattr(adversary, "MaskMan")(512)
+maskNet = getattr(adversary, "MaskMan")()
 maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_" + args.epoch_num +".pth"))
 # maskNet.cuda()
 maskNet.eval()
