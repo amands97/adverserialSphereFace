@@ -153,6 +153,8 @@ for i in range(6000):
     mask = maskNet(output)
     mask = gumbel_softmax(mask)
     print(mask.shape)
+    for i in range(4):
+        print(mask[i, 0])
     import sys
     sys.exit()
     output = fcNet(output)
