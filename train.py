@@ -66,6 +66,8 @@ def train(epoch,args):
         optimizerMask.zero_grad()
         
         mask =gumbel_softmax(maskNet(inputs))
+        if batch_idx % 10 == 0:
+            print(mask[0][0])
         maskedFeatures = torch.mul(mask, inputs)
         outputs = fcNet(featureNet(maskedFeatures))
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
