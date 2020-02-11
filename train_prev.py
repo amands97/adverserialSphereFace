@@ -1,5 +1,6 @@
 # CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
 
+# this is for the model where the adversary works onm the features
 
 from __future__ import print_function
 
@@ -141,7 +142,7 @@ def train(epoch,args):
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
-    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+    # featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 
     # maskNet = getattr(adversary, "MaskMan")(512)
     maskNet = getattr(adversary, "MaskMan")()
@@ -149,13 +150,13 @@ if args.checkpoint == -1:
     fcNet = getattr(net_sphere, "fclayers")()
     pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(fcDict)
+    # fcNet.load_state_dict(fcDict)
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
     featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + str(args.checkpoint) + '.pth'))
 
-    maskNet = getattr(adversary, "MaskMan")()
+    maskNet = getattr(adversary, "MaskMan")(512)
     maskNet.load_state_dict(torch.load('saved_models_ce/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
