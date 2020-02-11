@@ -132,7 +132,8 @@ for i in range(6000):
         sameflag = 0
         name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
         name2 = p[2]+'/'+p[2]+'_'+'{:04}.jpg'.format(int(p[3]))
-
+    print(name1)
+    print(name2)
     img1 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1),landmark[name1])
     img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
 
