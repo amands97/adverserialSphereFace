@@ -77,7 +77,7 @@ def train(epoch,args):
         # maskedFeatures = torch.mul(mask, features)
         features = featureNet(maskedFeatures)
         outputs = fcNet(features)
-        print(outputs.shape)
+        print(outputs)
         print("done")
         import sys
         sys.exit()
