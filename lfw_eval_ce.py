@@ -16,7 +16,7 @@ import zipfile
 from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
-
+from gumbel import gumbel_softmax
 def alignment(src_img,src_pts):
     ref_pts = [ [30.2946, 51.6963],[65.5318, 51.5014],
         [48.0252, 71.7366],[33.5493, 92.3655],[62.7299, 92.2041] ]
@@ -81,10 +81,10 @@ featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch
 featureNet.eval()
 
 # we dont need maskNet here right?
-# maskNet = getattr(adversary, "MaskMan")(512)
-# maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_19.pth"))
+maskNet = getattr(adversary, "MaskMan")(512)
+maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_" + args.epoch_num +".pth"))
 # maskNet.cuda()
-# maskNet.eval()
+maskNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
 fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
@@ -95,9 +95,11 @@ fcNet.eval()
 if use_cuda:
     featureNet.cuda()
     fcNet.cuda()
+    maskNet.cuda()
 else:
     featureNet.cpu()
     fcNet.cpu()
+    maskNet.cpu()
 # net = getattr(net_sphere,args.net)()
 # net.load_state_dict(torch.load(args.model))
 # net.cuda()
@@ -147,6 +149,9 @@ for i in range(6000):
     # output = net(img)
     output = featureNet(img)
     # print(output)
+    mask = maskNet(img)
+    mask = gumbel_softmax(mask)
+    print(mask.shape)
     output = fcNet(output)
     # print(output)
     f = output.data
