@@ -51,7 +51,7 @@ def train(epoch,args):
 
     global n_iter
     while True:
-        print("here")
+        # print("here")
         if batch_idx % 100 == 0:
             print(batch_idx)
         print(batch_idx)
