@@ -17,6 +17,7 @@ from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
 from gumbel import gumbel_softmax
+import adversary
 def alignment(src_img,src_pts):
     ref_pts = [ [30.2946, 51.6963],[65.5318, 51.5014],
         [48.0252, 71.7366],[33.5493, 92.3655],[62.7299, 92.2041] ]
