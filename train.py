@@ -120,6 +120,7 @@ def train(epoch,args):
         optimizerFC.zero_grad()
 
         mask = gumbel_softmax(maskNet(inputs))
+        mask = upsampler(mask)
         maskedFeatures = torch.mul(mask, inputs)
         outputs = fcNet(featureNet(maskedFeatures))
 
