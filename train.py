@@ -184,7 +184,7 @@ optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/1000, momentum=0.9,
 criterion2 = torch.nn.CrossEntropyLoss()
 
 print('start: time={}'.format(dt()))
-for epoch in range(0, 50):
+for epoch in range(0, 100):
     if epoch in [0,10,15]:
         if epoch!=0: args.lr *= 0.1
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr/10, momentum=0.9, weight_decay=5e-4)
