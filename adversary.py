@@ -51,8 +51,9 @@ class MaskMan(nn.Module):
         # conv this here and return
         x = self.outc1(x)
         # print(x.shape)
-        x = self.upsample(x)
-        print(x.shape)
+        # x = self.upsample(x)
+        # NOTE: Upsample after the gumbel softmax later
+        # print(x.shape)
         # import sys
         # sys.exit()
         return x

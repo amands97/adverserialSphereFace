@@ -82,7 +82,9 @@ def train(epoch,args):
         optimizerFC.zero_grad()
         mask =gumbel_softmax(maskNet(inputs))
         # if batch_idx % 10 == 0:
+        mask = upsampler(mask)
         print(mask[0][0])
+
         maskedFeatures = torch.mul(mask, inputs)
         outputs = fcNet(featureNet(maskedFeatures))
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
@@ -182,7 +184,7 @@ optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters())
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
 optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/1000, momentum=0.9, weight_decay=5e-4)
 criterion2 = torch.nn.CrossEntropyLoss()
-
+upsampler = torch.nn.Upsample(scale_factor = 4, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
     if epoch in [0,10,15]:
