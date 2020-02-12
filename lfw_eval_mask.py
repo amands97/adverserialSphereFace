@@ -136,6 +136,7 @@ for i in range(6000):
     print(name2)
     img1 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1),landmark[name1])
     img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
+    print("shadnoasjdnajosd", img1.shape)
     # print(img1)
     # from matplotlib import pyplot as plt
     # plt.imshow(img1)
@@ -157,24 +158,50 @@ for i in range(6000):
     # output = net(img)
     output = featureNet(img)
     # print(output)
-    mask = maskNet(output)
+    mask = maskNet(img)
     mask = gumbel_softmax(mask)
     print(mask.shape)
+    print(img[0,0])
+    outimg = img.numpy() * mask.detach().numpy()
+    # outimg = outimg[:, 0, :, :].unsqueeze(1)
+    print(outimg.shape)
+    print(outimg[0, 0])
+    # outimg[:, :].permute(2, 1, 0)
+    # print(outimg.shape)
+    # print(outimg.permute())
+    # print(outimg.unsqueeze(1).shape)
 
     for i in range(4):
-        print(mask[i, 0])
+        # print(mask[i, 0])
+        # print(outimg[i])
+        # image = cv2.resize(outimg[i].detach().unsqueeze(0).numpy(), (96, 112), interpolation = cv2.INTER_AREA)
+        print(outimg[i].shape)
+        print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
+        print("asdasd")
+        image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, (96, 112))
+        image = image * 128.0 + 127.5
+        # print(outimg[])
+        cv2.imwrite("face" + str(i)+  ".jpg", image)
+
+        # image.save("face" + str(i)+  ".jpg")
+
         image = transforms.ToPILImage(mode='L')(mask[i])
         image = image.resize((96, 112))
         image.save("mask" + str(i)+  ".jpg")
-    import sys
-    sys.exit()
-    output = fcNet(output)
-    # print(output)
-    f = output.data
-    f1,f2 = f[0],f[2]
-    cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
-    predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
-
+    # import sys
+    # sys.exit()
+    # output = fcNet(output)
+    # # print(output)
+    # f = output.data
+    # f1,f2 = f[0],f[2]
+    # cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
+    # predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
+    import time
+    time.sleep(5)
+    if i == 10:
+        import sys
+        sys.exit()
 
 accuracy = []
 thd = []
