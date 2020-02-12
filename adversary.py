@@ -40,33 +40,33 @@ class MaskMan(nn.Module):
         x3 = self.down2(x2)
         x4 = self.down3(x3)
         x5 = self.down4(x4)
-        print(x5.shape)
+        # print(x5.shape)
 
-        print(x4.shape)
+        # print(x4.shape)
         x = self.up1(x5, x4)
-        print(x.shape)
+        # print(x.shape)
         x = self.up2(x, x3)
-        print(x.shape)
+        # print(x.shape)
         # return this
         # conv this here and return
         x = self.outc1(x)
-        print(x.shape)
+        # print(x.shape)
         x = self.upsample(x)
         print(x.shape)
-        import sys
-        sys.exit()
-        return x
-        x = self.up3(x, x2)
-        print(x.shape)
-
-        x = self.up4(x, x1)
-        print(x.shape)
-
-        logits = self.outc(x)
-        print(logits.shape)
         # import sys
         # sys.exit()
-        return logits
+        return x
+        # x = self.up3(x, x2)
+        # print(x.shape)
+
+        # x = self.up4(x, x1)
+        # print(x.shape)
+
+        # logits = self.outc(x)
+        # print(logits.shape)
+        # # import sys
+        # # sys.exit()
+        # return logits
 
 class MaskMan2(nn.Module):
     def __init__(self,  in_features):
