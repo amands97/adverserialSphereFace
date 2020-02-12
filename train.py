@@ -56,7 +56,7 @@ def train(epoch,args):
         # print("here")
         if batch_idx % 100 == 0 and batch_idx > 0:
             print(batch_idx)
-            break
+            # break
         print(batch_idx)
 
 
