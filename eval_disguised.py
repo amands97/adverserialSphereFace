@@ -138,7 +138,7 @@ for i in range(n):
     if (i%2 == 0):
         print("done:", i)
     p = pairs_lines[i].replace('\n','').split(', ')
-    # print(p)
+    print(p)
     name1 = "FaceDisguiseDatabase/FaceAll_cropped/" + p[0]
     name2 = "FaceDisguiseDatabase/FaceAll_cropped/" + p[1]
     sameflag = p[2]
