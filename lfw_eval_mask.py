@@ -179,9 +179,12 @@ for i in range(6000):
         print(outimg[i].shape)
         print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
         print("asdasd")
-        image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
+        image = outimg[i].transpose(1,2,0)
+        # image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
         image = cv2.resize(image, (96, 112))
         image = image * 128.0 + 127.5
+        # image = image.transpose((2, 0, 1))
+        print(image.shape)
         # print(outimg[])
         cv2.imwrite("face" + str(i)+  ".jpg", image)
 

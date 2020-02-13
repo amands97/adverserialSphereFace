@@ -66,7 +66,7 @@ def find_best_threshold(thresholds, predicts):
 
 parser = argparse.ArgumentParser(description='PyTorch sphereface disguised dataset')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
-parser.add_argument('--data', default='lfw/lfw.zip', type=str)
+parser.add_argument('--data', default='data/FaceDisguiseDatabase.zip', type=str)
 # parser.add_argument('--model','-m', default='sphere20a.pth', type=str)
 parser.add_argument('--epoch_num', type=str)
 args = parser.parse_args()
@@ -75,31 +75,47 @@ predicts=[]
 use_cuda = torch.cuda.is_available()
 
 
-featureNet = getattr(net_sphere,args.net)()
-featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
-# featureNet.cuda()
-featureNet.eval()
+if args.epoch_num == "-1":
+    featureNet = getattr(net_sphere,args.net)()
 
-# we dont need maskNet here right?
-maskNet = getattr(adversary, "MaskMan")()
-maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_" + args.epoch_num +".pth"))
-# maskNet.cuda()
-maskNet.eval()
+    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 
-fcNet = getattr(net_sphere, "fclayers")()
-fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
-# fcNet.cuda()
-fcNet.feature = True
-fcNet.eval()
+    # maskNet = getattr(adversary, "MaskMan")(512)
+    # maskNet = getattr(adversary, "MaskMan")()
+
+    fcNet = getattr(net_sphere, "fclayers")()
+    pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+    fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+    fcNet.load_state_dict(fcDict)
+    fcNet.feature = True
+
+
+else:
+    featureNet = getattr(net_sphere,args.net)()
+    featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
+    # featureNet.cuda()
+    featureNet.eval()
+
+    # we dont need maskNet here right?
+    # maskNet = getattr(adversary, "MaskMan")()
+    # maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_" + args.epoch_num +".pth"))
+    # maskNet.cuda()
+    # maskNet.eval()
+
+    fcNet = getattr(net_sphere, "fclayers")()
+    fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
+    # fcNet.cuda()
+    fcNet.feature = True
+    fcNet.eval()
 
 if use_cuda:
     featureNet.cuda()
     fcNet.cuda()
-    maskNet.cuda()
+    # maskNet.cuda()
 else:
     featureNet.cpu()
     fcNet.cpu()
-    maskNet.cpu()
+    # maskNet.cpu()
 # net = getattr(net_sphere,args.net)()
 # net.load_state_dict(torch.load(args.model))
 # net.cuda()
@@ -117,29 +133,35 @@ landmark = {}
 
 with open('pairs.txt') as f:
     pairs_lines = f.readlines()
-
-for i in range(820):
-    if (i%100 == 0):
+n = 820
+for i in range(n):
+    if (i%2 == 0):
         print("done:", i)
     p = pairs_lines[i].replace('\n','').split(', ')
-    print(p)
-    import sys
-    sys.exit()
-    if 3==len(p):
-        sameflag = 1
-        name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
-        name2 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[2]))
-    if 4==len(p):
-        sameflag = 0
-        name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
-        name2 = p[2]+'/'+p[2]+'_'+'{:04}.jpg'.format(int(p[3]))
+    # print(p)
+    name1 = "FaceDisguiseDatabase/FaceAll_cropped/" + p[0]
+    name2 = "FaceDisguiseDatabase/FaceAll_cropped/" + p[1]
+    sameflag = p[2]
 
-    img1 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1),landmark[name1])
-    # img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
+    # if 3==len(p):
+    #     sameflag = 1
+    #     name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
+    #     name2 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[2]))
+    # if 4==len(p):
+    #     sameflag = 0
+    #     name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
+    #     name2 = p[2]+'/'+p[2]+'_'+'{:04}.jpg'.format(int(p[3]))
+
+    img1 = cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1)
+    img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
+    img1 = cv2.resize(img1, (96, 112))
+    img2 = cv2.resize(img2, (96, 112))
+
     # print(img1)
     # from matplotlib import pyplot as plt
     # plt.imshow(img1)
-
+    # import sys
+    # sys.exit()
     
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     for i in range(len(imglist)):
@@ -165,7 +187,7 @@ for i in range(820):
 
 accuracy = []
 thd = []
-folds = KFold(n=6000, n_folds=10, shuffle=False)
+folds = KFold(n=n, n_folds=10, shuffle=False)
 thresholds = np.arange(-1.0, 1.0, 0.005)
 predicts = np.array(map(lambda line:line.strip('\n').split(), predicts))
 for idx, (train, test) in enumerate(folds):
