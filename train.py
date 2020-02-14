@@ -122,7 +122,7 @@ def train(epoch,args):
         mask = gumbel_softmax(maskNet(inputs))
         mask = upsampler(mask)
         maskedFeatures = torch.mul(mask, inputs)
-        outputs = fcNet(featureNet(maskedFeatures.detaach()))
+        outputs = fcNet(featureNet(maskedFeatures.detach()))
 
 
         lossC = criterion(outputs, targets)
