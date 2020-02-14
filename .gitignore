@@ -3,7 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 runs/
-
+data/
+model/
+saved_models*/
+lfw/
 *.zip
 # C extensions
 *.so

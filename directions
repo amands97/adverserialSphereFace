@@ -25,3 +25,13 @@ TODO:
 
 
  DO batch normalization
+
+
+ DO batch normalization
+https://pytorch.org/tutorials/beginner/dcgan_faces_tutorial.html
+
+detach the fetures like the fake in detached
+
+
+
+slow down the lr of the  classiofier to show to the adversary as if the classifier is fixed. so at each step the adversary will learn the least size mask
