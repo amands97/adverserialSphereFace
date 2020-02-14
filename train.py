@@ -103,7 +103,7 @@ def train(epoch,args):
         writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/1000000, n_iter)
-        if lossSize/10000 < 0.1:
+        if lossSize/10000 < 0.5:
             loss = -lossAdv/10
         else:
             loss = -lossAdv/10  + lossSize/10000
