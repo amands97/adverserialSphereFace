@@ -102,6 +102,7 @@ def train(epoch,args):
         else:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
         print(lossSize1.size())
+        print(lossSize1)
         lossSize = 0
         if lossSize1 > 0.25:
             lossSize = (100*(lossSize1 - 0.25)).pow(2)
