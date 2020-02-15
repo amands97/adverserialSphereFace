@@ -98,20 +98,24 @@ def train(epoch,args):
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         print(mask.size())
         if use_cuda:
-            lossSize = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), size_average = False)
+            lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
         else:
-            lossSize = F.l1_loss(mask, target=torch.ones(mask.size()), size_average = False)
-        print(lossSize.size())
-    
+            lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
+        print(lossSize1.size())
+        lossSize = 0
+        if lossSize1 > 0.25:
+            lossSize = (100*(lossSize1 - 0.25)).pow(2)
+        else if lossSize1 < 0.1:
+            lossSize = (100 * (0.1 - lossSize1).pow(2)) 
         writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
-        writer.add_scalar('Loss/adv-size', lossSize/1000000, n_iter)
-        if lossSize/10000 < 0.5:
-            print("here")
-            loss = -lossAdv/10
-        else:
-            print("not herer")
-            loss = -lossAdv/10  + lossSize/10000
+        writer.add_scalar('Loss/adv-size', lossSize, n_iter)
+        # if lossSize/10000 < 0.5:
+        #     print("here")
+        #     loss = -lossAdv/10
+        # else:
+            # print("not herer")
+        loss = -lossAdv/10  + lossSize
         
         # loss = -lossAdv/10 + lossCompact/1000000 + lossSize/10
         # loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
