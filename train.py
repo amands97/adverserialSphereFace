@@ -203,7 +203,7 @@ for epoch in range(0, 100):
         if epoch!=0: args.lr *= 0.1
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr/100, momentum=0.9, weight_decay=5e-4)
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/10, momentum=0.9, weight_decay=5e-4)
+        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=0.9, weight_decay=5e-4)
         # slowed the lr even more
     if args.checkpoint >= epoch:
         continue
