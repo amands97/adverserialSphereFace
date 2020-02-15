@@ -104,8 +104,10 @@ def train(epoch,args):
         writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize/1000000, n_iter)
         if lossSize/10000 < 0.2:
+            print("here")
             loss = -lossAdv/10
         else:
+            print("not herer")
             loss = -lossAdv/10  + lossSize/10000
         
         # loss = -lossAdv/10 + lossCompact/1000000 + lossSize/10
