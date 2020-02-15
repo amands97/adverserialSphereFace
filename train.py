@@ -105,7 +105,7 @@ def train(epoch,args):
         print(lossSize1)
         lossSize = 0
         if lossSize1 > 0.25:
-            lossSize = 100*(100*(lossSize1 - 0.25)).pow(2)
+            lossSize = (100*(lossSize1 - 0.25)).pow(2)
         elif lossSize1 < 0.1:
             lossSize = 10000*(100 * (0.1 - lossSize1).pow(2)) 
         print(lossSize)
