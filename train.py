@@ -29,8 +29,11 @@ parser = argparse.ArgumentParser(description='PyTorch sphereface')
 parser.add_argument('--net','-n', default='sphere20a', type=str)
 parser.add_argument('--dataset', default='../../dataset/face/casia/casia.zip', type=str)
 parser.add_argument('--lr', default=0.1, type=float, help='learning rate')
+parser.add_argument('--lrfc', default=0.1, type=float, help='learning rate classifier')
+
 parser.add_argument('--bs', default=256, type=int, help='')
 parser.add_argument('--mom', default=0.9, type=float, help='momentum')
+parser.add_argument('--momfc', default=0.9, type=float, help='momentum classifier')
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 args = parser.parse_args()
@@ -194,16 +197,16 @@ if use_cuda:
     laplacianKernel =  laplacianKernel.cuda()
 
 criterion = net_sphere.AngleLoss()
-optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr, momentum=0.009, weight_decay=5e-4)
+optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr/1000, momentum=0.9, weight_decay=5e-4)
+optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom weight_decay=5e-4)
 criterion2 = torch.nn.CrossEntropyLoss()
 # upsampler = torch.nn.Upsample(scale_factor = 4, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
     if epoch in [0,10,15]:
         if epoch!=0: args.lr *= 0.1
-        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lr/100, momentum=0.009, weight_decay=5e-4)
+        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
         # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
         optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # slowed the lr even more
