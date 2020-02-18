@@ -197,19 +197,29 @@ if use_cuda:
     laplacianKernel =  laplacianKernel.cuda()
 
 criterion = net_sphere.AngleLoss()
-optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-        # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
+# optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+# optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
+
+optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
+optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
+
+
 criterion2 = torch.nn.CrossEntropyLoss()
 # upsampler = torch.nn.Upsample(scale_factor = 4, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
     if epoch in [0,10,15]:
-        if epoch!=0: args.lr *= 0.1
-        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-        # optimizerFeature = optim.SGD(featureNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
-        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
+        if epoch!=0:
+            args.lr *= 0.1
+            args.lrfc *= 0.1
+        # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+        # optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
+        # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
+        optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
+        optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
+
+
     if args.checkpoint >= epoch:
         continue
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
