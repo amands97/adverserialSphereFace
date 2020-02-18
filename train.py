@@ -122,7 +122,7 @@ def train(epoch,args):
         #     loss = -lossAdv/10
         # else:
             # print("not herer")
-        loss = -lossAdv/10  + lossSize
+        loss = (-lossAdv)  + lossSize
         
         # loss = -lossAdv/10 + lossCompact/1000000 + lossSize/10
         # loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
