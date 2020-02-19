@@ -1,6 +1,9 @@
 # CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
 
 
+# python train.py --dataset casia.zip --bs 10 --lr 0.0001 --lrfc 0.00005 --mom 0.0000 --momfc 0.0000 --checkpoint blok
+#  fine lr 0.01 and lrfc 0.0000001 use mom 0. maybe try 0.001
+
 from __future__ import print_function
 
 import torch
@@ -87,7 +90,7 @@ def train(epoch,args):
         optimizerFC.zero_grad()
         mask =gumbel_softmax(maskNet(inputs))
         # if batch_idx % 10 == 0:
-        # mask = upsampler(mask)
+        mask = upsampler(mask)
         print(mask[0][0])
 
         maskedFeatures = torch.mul(mask, inputs)
@@ -111,8 +114,8 @@ def train(epoch,args):
         lossSize = 0
         if lossSize1 > 0.25:
             lossSize = (100*(lossSize1 - 0.25)).pow(2)
-        elif lossSize1 < 0.1:
-            lossSize = 10000*(100 * (0.1 - lossSize1).pow(2)) 
+        elif lossSize1 < 0.10:
+            lossSize = 10000*(100 * (0.10 - lossSize1).pow(2)) 
         print(lossSize)
         writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
@@ -137,7 +140,7 @@ def train(epoch,args):
         optimizerFC.zero_grad()
 
         mask = gumbel_softmax(maskNet(inputs))
-        # mask = upsampler(mask)
+        mask = upsampler(mask)
         maskedFeatures = torch.mul(mask, inputs)
         outputs = fcNet(featureNet(maskedFeatures))
 
@@ -198,27 +201,27 @@ if use_cuda:
     laplacianKernel =  laplacianKernel.cuda()
 
 criterion = net_sphere.AngleLoss()
-# optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-# optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
+optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
 
-optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
-optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
+# optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
+# optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
 
 
 criterion2 = torch.nn.CrossEntropyLoss()
-# upsampler = torch.nn.Upsample(scale_factor = 4, mode = 'nearest')
+upsampler = torch.nn.Upsample(scale_factor = 4, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
     if epoch in [0,10,15]:
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
-        # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-        # optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
+        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
-        optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
-        optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
+        # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
+        # optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
 
 
     if args.checkpoint >= epoch:

@@ -32,7 +32,7 @@ class MaskMan(nn.Module):
         self.up3 = Up(256, 64, bilinear)
         self.up4 = Up(128, 64, bilinear)
         self.outc = OutConv(64, n_classes)
-        # self.outc1 = OutConv(128, n_classes)
+        self.outc1 = OutConv(128, n_classes)
         self.upsample = nn.Upsample(scale_factor = 4, mode = 'nearest')
     def forward(self, x):
         x1 = self.inc(x)
@@ -46,17 +46,11 @@ class MaskMan(nn.Module):
         x = self.up1(x5, x4)
         # print(x.shape)
         x = self.up2(x, x3)
-        # print(x.shape)
         # return this
         # conv this here and return
-        # x = self.outc1(x)
-        # print(x.shape)
-        # x = self.upsample(x)
-        # NOTE: Upsample after the gumbel softmax later
-        # print(x.shape)
-        # import sys
-        # sys.exit()
-        # return x
+        x = self.outc1(x)
+        return x
+
         x = self.up3(x, x2)
         # print(x.shape)
 
