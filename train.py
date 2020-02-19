@@ -59,9 +59,9 @@ def train(epoch,args):
     global n_iter
     while True:
         # print("here")
-        if batch_idx % 100 == 0 and batch_idx > 0:
+        if batch_idx % 50 == 0 and batch_idx > 0:
             print(batch_idx)
-            # break
+            break   
         print(batch_idx)
 
 
@@ -115,7 +115,7 @@ def train(epoch,args):
             lossSize = 10000*(100 * (0.1 - lossSize1).pow(2)) 
         print(lossSize)
         writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
-        writer.add_scalar('Loss/adv-compactness', lossCompact/1000000, n_iter)
+        writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize, n_iter)
         # if lossSize/10000 < 0.5:
         #     print("here")
@@ -123,6 +123,7 @@ def train(epoch,args):
         # else:
             # print("not herer")
         loss = (-lossAdv)/100000000  + lossSize
+        # loss = (-lossAdv)/100000000  + lossSize + lossCompact/100
         
         # loss = -lossAdv/10 + lossCompact/1000000 + lossSize/10
         # loss = - criterion2(outputs1, targets)/100 + lossCompact/1000000 + lossSize/10000
