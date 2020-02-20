@@ -160,7 +160,7 @@ for i in range(6000):
     # print(output)
     mask = maskNet(img)
     mask = gumbel_softmax(mask)
-    mask = nn.Upsample(scale_factor = 4, mode = 'nearest')(mask)
+    mask = nn.Upsample(scale_factor = 16, mode = 'nearest')(mask)
     print(mask.shape)
     print(img[0,0])
     outimg = img.numpy() * mask.detach().numpy()

@@ -64,8 +64,8 @@ def train(epoch,args):
         # print("here")
         if batch_idx % 50 == 0 and batch_idx > 0:
             print(batch_idx)
-            # break   
-        # print(batch_idx)
+            break   
+        print(batch_idx)
 
 
         n_iter += 1
@@ -92,7 +92,7 @@ def train(epoch,args):
         # if batch_idx % 10 == 0:
         mask = upsampler(mask)
         print(mask[0][0])
-
+        # print(inputs.shape)
         maskedFeatures = torch.mul(mask, inputs)
         outputs = fcNet(featureNet(maskedFeatures))
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
@@ -209,7 +209,7 @@ optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,
 
 
 criterion2 = torch.nn.CrossEntropyLoss()
-upsampler = torch.nn.Upsample(scale_factor = 4, mode = 'nearest')
+upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
     # if epoch in [0,30,45]:

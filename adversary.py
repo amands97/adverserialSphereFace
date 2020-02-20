@@ -34,15 +34,20 @@ class MaskMan(nn.Module):
         self.outc = OutConv(64, n_classes)
         self.outc1 = OutConv(128, n_classes)
         self.upsample = nn.Upsample(scale_factor = 4, mode = 'nearest')
+        self.outc2 = OutConv(512, n_classes)
     def forward(self, x):
         x1 = self.inc(x)
         x2 = self.down1(x1)
         x3 = self.down2(x2)
         x4 = self.down3(x3)
+
         x5 = self.down4(x4)
         # print(x5.shape)
 
         # print(x4.shape)
+        x5 = self.outc2(x5)
+        print(x5.shape, "aaaaaaaaaaaa")
+        return x5
         x = self.up1(x5, x4)
         # print(x.shape)
         x = self.up2(x, x3)
