@@ -124,6 +124,7 @@ def train(epoch,args):
         # maskedFeatures = torch.mul(mask, inputs)
         maskedFeatures = inputs
         outputs = fcNet(featureNet(maskedFeatures))
+        total += targets.size(0)
 
 
         lossC = criterion(outputs, targets)
