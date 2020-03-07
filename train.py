@@ -64,9 +64,9 @@ def train(epoch,args):
         # print("here")
         if batch_idx % 50 == 0 and batch_idx > 0:
             print(batch_idx)
-            break   
-        print(batch_idx)
-
+            # break   
+        # print(batch_idx)
+# /
 
         n_iter += 1
         img,label = ds.get()
