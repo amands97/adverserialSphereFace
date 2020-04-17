@@ -46,7 +46,7 @@ class MaskMan(nn.Module):
 
         # print(x4.shape)
         x5 = self.outc2(x5)
-        print(x5.shape, "aaaaaaaaaaaa")
+        # print(x5.shape, "aaaaaaaaaaaa")
         return x5
         x = self.up1(x5, x4)
         # print(x.shape)
