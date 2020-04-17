@@ -72,15 +72,15 @@ def train(epoch,args):
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         inputs, targets = Variable(inputs), Variable(targets)
 
-        # outputs = fcNet(featureNet(inputs))
-        # outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-        # _, predicted = torch.max(outputs1.data, 1)
-        # total2 += targets.size(0)
-        # if use_cuda:
-        #     correct2 += predicted.eq(targets.data).cpu().sum()
-        # else:
-        #     correct2 += predicted.eq(targets.data).sum()
-        # writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
+        outputs = fcNet(featureNet(inputs))
+        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs1.data, 1)
+        total2 += targets.size(0)
+        if use_cuda:
+            correct2 += predicted.eq(targets.data).cpu().sum()
+        else:
+            correct2 += predicted.eq(targets.data).sum()
+        writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
 
         # optimizerMask.zero_grad()
         # optimizerFC.zero_grad()
@@ -187,12 +187,12 @@ criterion2 = torch.nn.CrossEntropyLoss()
 upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
-    if epoch in [0,10,15, 18, 30, 45, 60]:
-        if epoch!=0:
-            args.lr *= 0.1
-            args.lrfc *= 0.1
-            optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-            optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
+    # if epoch in [0,30,45]:
+    #     if epoch!=0:
+    #         args.lr *= 0.1
+    #         args.lrfc *= 0.1
+    #     optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+    #     optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
         # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
