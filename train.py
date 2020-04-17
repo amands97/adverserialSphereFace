@@ -82,46 +82,46 @@ def train(epoch,args):
         #     correct2 += predicted.eq(targets.data).sum()
         # writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
 
-        # optimizerMask.zero_grad()
+        optimizerMask.zero_grad()
         # optimizerFC.zero_grad()
-        # mask =gumbel_softmax(maskNet(inputs))
-        # mask = upsampler(mask)
-        # maskedFeatures = torch.mul(mask, inputs)
-        # outputs = fcNet(featureNet(maskedFeatures))
-        # outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-        # _, predicted = torch.max(outputs1.data, 1)
-        # total += targets.size(0)
-        # if use_cuda:
-        #     correct += predicted.eq(targets.data).cpu().sum()
-        # else:
-        #     correct += predicted.eq(targets.data).sum()
-        # lossAdv = criterion(outputs, targets)
-        # # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
-        # if use_cuda:
-        #     lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
-        # else:
-        #     lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
-        # lossSize = 0
-        # if lossSize1 > 0.25:
-        #     lossSize = (100*(lossSize1 - 0.25)).pow(2)
-        # elif lossSize1 < 0.10:
-        #     lossSize = 10000*(100 * (0.10 - lossSize1).pow(2)) 
-        # writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
-        # # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
-        # writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-        # loss = (-lossAdv)/100000000  + lossSize
-        # writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
-        # lossd = loss.data
-        # loss.backward()
-        # optimizerMask.step()
+        mask =gumbel_softmax(maskNet(inputs))
+        mask = upsampler(mask)
+        maskedFeatures = torch.mul(mask, inputs)
+        outputs = fcNet(featureNet(maskedFeatures))
+        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs1.data, 1)
+        total += targets.size(0)
+        if use_cuda:
+            correct += predicted.eq(targets.data).cpu().sum()
+        else:
+            correct += predicted.eq(targets.data).sum()
+        lossAdv = criterion(outputs, targets)
+        # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
+        if use_cuda:
+            lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
+        else:
+            lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
+        lossSize = 0
+        if lossSize1 > 0.25:
+            lossSize = (100*(lossSize1 - 0.25)).pow(2)
+        elif lossSize1 < 0.10:
+            lossSize = 10000*(100 * (0.10 - lossSize1).pow(2)) 
+        writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
+        # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
+        writer.add_scalar('Loss/adv-size', lossSize, n_iter)
+        loss = (-lossAdv)/100000000  + lossSize
+        writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
+        lossd = loss.data
+        loss.backward()
+        optimizerMask.step()
 
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
         optimizerFC.zero_grad()
 
-        # mask = gumbel_softmax(maskNet(inputs))
-        # mask = upsampler(mask)
-        # maskedFeatures = torch.mul(mask, inputs)
+        mask = gumbel_softmax(maskNet(inputs))
+        mask = upsampler(mask)
+        maskedFeatures = torch.mul(mask, inputs)
         maskedFeatures = inputs
         outputs = fcNet(featureNet(maskedFeatures))
         total += targets.size(0)
