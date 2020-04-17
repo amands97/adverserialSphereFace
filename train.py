@@ -118,6 +118,8 @@ def train(epoch,args):
 
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
+        featureNet.zero_grad()
+        fcNet.zero_grad()
         optimizerFC.zero_grad()
 
         mask = gumbel_softmax(maskNet(inputs))
