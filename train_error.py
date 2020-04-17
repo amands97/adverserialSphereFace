@@ -1,5 +1,4 @@
-# CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
-
+# CUDA_VISIBLE_DEVICES=2 python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0001 --lrfc 0.1 --mom 0.000009 --momfc 0.9 --checkpoint -1
 
 # python train.py --dataset casia.zip --bs 10 --lr 0.0001 --lrfc 0.00005 --mom 0.0000 --momfc 0.0000 --checkpoint blok
 #  fine lr 0.01 and lrfc 0.0000001 use mom 0. maybe try 0.001
@@ -122,8 +121,8 @@ def train(epoch,args):
 
         mask = gumbel_softmax(maskNet(inputs))
         mask = upsampler(mask)
-        maskedFeatures = torch.mul(mask, inputs).detach()
-        # maskedFeatures = inputs
+        maskedFeatures = torch.mul(mask, inputs)
+        maskedFeatures = inputs
         outputs = fcNet(featureNet(maskedFeatures))
         total += targets.size(0)
 
