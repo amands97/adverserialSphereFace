@@ -132,25 +132,25 @@ def train(epoch,args):
         # fcNet.zero_grad()
         optimizerFC.zero_grad()
 
-        mask = gumbel_softmax(maskNet(inputs))
-        mask = upsampler(mask)
-        maskedFeatures = torch.mul(mask.detach(), inputs).detach()
-        # maskedFeatures = inputs
-        outputs = newNet(maskedFeatures)
-        total += targets.size(0)
+        # mask = gumbel_softmax(maskNet(inputs))
+        # mask = upsampler(mask)
+        # maskedFeatures = torch.mul(mask.detach(), inputs).detach()
+        # # maskedFeatures = inputs
+        # outputs = newNet(maskedFeatures)
+        # total += targets.size(0)
 
 
-        lossC = criterion(outputs, targets.detach())
-        lossClassification = lossC.data
-        lossC.backward()
-        optimizerFC.step()
-        classification_loss += lossClassification
-        # train_loss += loss.data
+        # lossC = criterion(outputs, targets.detach())
+        # lossClassification = lossC.data
+        # lossC.backward()
+        # optimizerFC.step()
+        # classification_loss += lossClassification
+        # # train_loss += loss.data
 
-        writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
-        # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
-        writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
-        writer.add_scalar('Accuracy/correct', correct, n_iter)
+        # writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
+        # # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
+        # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
+        # writer.add_scalar('Accuracy/correct', correct, n_iter)
         
 
         batch_idx += 1
