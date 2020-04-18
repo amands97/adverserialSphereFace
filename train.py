@@ -98,7 +98,7 @@ def train(epoch,args):
             correct += predicted.eq(targets.data).cpu().sum()
         else:
             correct += predicted.eq(targets.data).sum()
-        lossAdv = criterion(outputs, targets)
+        lossAdv = criterion(outputs, targets.detach())
         # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
@@ -140,7 +140,7 @@ def train(epoch,args):
         total += targets.size(0)
 
 
-        lossC = criterion(outputs, targets)
+        lossC = criterion(outputs, targets.detach())
         lossClassification = lossC.data
         lossC.backward()
         optimizerFC.step()
