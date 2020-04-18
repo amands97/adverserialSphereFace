@@ -117,9 +117,10 @@ def train(epoch,args):
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()
-        print(newNet.state_dict())
+        s1 = (newNet.state_dict())
         optimizerMask.step()
-        print(newNet.state_dict())
+        s2 = (newNet.state_dict())
+        print(s1 == s2)
         print("  --------------------------")
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
