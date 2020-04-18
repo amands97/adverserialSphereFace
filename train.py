@@ -204,7 +204,9 @@ for epoch in range(0, 100):
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
-            optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+            optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+            
+            # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
             optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
