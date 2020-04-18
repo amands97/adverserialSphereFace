@@ -120,8 +120,8 @@ def train(epoch,args):
         s1 = (newNet.state_dict())
         optimizerMask.step()
         s2 = (newNet.state_dict())
-        print(s1 == s2)
-        print("  --------------------------")
+        # print(s1 == s2)
+        # print("  --------------------------")
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
         maskNet.zero_grad()
