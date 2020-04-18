@@ -117,11 +117,13 @@ def train(epoch,args):
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()
-        s1 = (newNet.state_dict())
+        s1 = (newNet.state_dict()['1.fc5.bias'])
         optimizerMask.step()
-        s2 = (newNet.state_dict())
+        s2 = (newNet.state_dict()['1.fc5.bias'])
+        print(s1)
+        print(s2)
         # print(s1 == s2)
-        # print("  --------------------------")
+        print("  --------------------------")
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
         maskNet.zero_grad()
