@@ -81,7 +81,9 @@ def train(epoch,args):
         # else:
         #     correct2 += predicted.eq(targets.data).sum()
         # writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
-
+        maskNet.zero_grad()
+        featureNet.zero_grad()
+        fcNet.zero_grad()
         optimizerMask.zero_grad()
         # optimizerFC.zero_grad()
         mask =gumbel_softmax(maskNet(inputs))
@@ -118,6 +120,7 @@ def train(epoch,args):
 
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
+        maskNet.zero_grad()
         featureNet.zero_grad()
         fcNet.zero_grad()
         optimizerFC.zero_grad()
