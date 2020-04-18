@@ -117,13 +117,13 @@ def train(epoch,args):
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()
-        s1 = (newNet.state_dict()['1.fc5.bias'])
+        # s1 = (newNet.state_dict()['1.fc5.bias'])
         optimizerMask.step()
-        s2 = (newNet.state_dict()['1.fc5.bias'])
-        print(s1)
-        print(s2)
+        # s2 = (newNet.state_dict()['1.fc5.bias'])
+        # print(s1)
+        # print(s2)
         # print(s1 == s2)
-        print("  --------------------------")
+        # print("  --------------------------")
         # set this optimizer mask grad to be zero again
         # optimizerMask.zero_grad()
         maskNet.zero_grad()
@@ -171,15 +171,26 @@ if args.checkpoint == -1:
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
-    featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+    featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
-    maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
+    # maskNet.load_state_dict(torch.load('saved_models_ce/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+    fcNet.load_state_dict(torch.load('saved_models_ce/fcNet_'+ str(args.checkpoint)+ '.pth'))
     laplacianKernel = getKernel()
+# else:
+#     featureNet = getattr(net_sphere,args.net)()
+#     featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+
+#     maskNet = getattr(adversary, "MaskMan")()
+#     maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
+#     fcNet = getattr(net_sphere, "fclayers")()
+#     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+#     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+#     fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+#     laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
 if use_cuda:
