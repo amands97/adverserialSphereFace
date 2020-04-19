@@ -67,16 +67,20 @@ def train(epoch,args):
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         inputs, targets = Variable(inputs), Variable(targets)
+        fcNet.eval()
+        featureNet.eval()
 
-        # outputs = fcNet(featureNet(inputs))
-        # outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-        # _, predicted = torch.max(outputs1.data, 1)
-        # total2 += targets.size(0)
-        # if use_cuda:
-        #     correct2 += predicted.eq(targets.data).cpu().sum()
-        # else:
-        #     correct2 += predicted.eq(targets.data).sum()
-        # writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
+        outputs = fcNet(featureNet(inputs))
+        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs1.data, 1)
+        total2 += targets.size(0)
+        if use_cuda:
+            correct2 += predicted.eq(targets.data).cpu().sum()
+        else:
+            correct2 += predicted.eq(targets.data).sum()
+        writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
+        fcNet.train()
+        featureNet.train()
         # maskNet.zero_grad()
         # featureNet.zero_grad()
         # fcNet.zero_grad()
