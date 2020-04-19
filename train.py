@@ -160,15 +160,19 @@ def train(epoch,args):
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
-    # featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
 
     fcNet = getattr(net_sphere, "fclayers")()
-    # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
-    # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    # fcNet.load_state_dict(fcDict)
+    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+    pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+    fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+    fcNet.load_state_dict(fcDict)
+    save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
+    save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
+    save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
     laplacianKernel = getKernel()
+
 else:
     featureNet = getattr(net_sphere,args.net)()
     featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + str(args.checkpoint) + '.pth'))
