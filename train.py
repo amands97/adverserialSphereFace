@@ -168,11 +168,15 @@ if args.checkpoint == -1:
     pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
     fcNet.load_state_dict(fcDict)
-    epoch = -1
+    epoch = 111
     save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
     save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
     save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
     laplacianKernel = getKernel()
+    print("models saved")
+    import sys
+    sys.exit()
+
 
 else:
     featureNet = getattr(net_sphere,args.net)()
