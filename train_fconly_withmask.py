@@ -193,7 +193,7 @@ criterion2 = torch.nn.CrossEntropyLoss()
 upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
-    if epoch in [0,18, 30, 45, 60]:
+    if epoch in [0,6, 12, 18, 30]:
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
