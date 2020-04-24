@@ -68,14 +68,19 @@ parser.add_argument('--net','-n', default='sphere20a', type=str)
 parser.add_argument('--lfw', default='lfw/lfw.zip', type=str)
 parser.add_argument('--model','-m', default='sphere20a.pth', type=str)
 parser.add_argument('--epoch_num', type=str)
+parser.add_argument('--model_folder', type=int, default = -1)
+
 args = parser.parse_args()
 
 predicts=[]
 
 
-
 featureNet = getattr(net_sphere,args.net)()
-featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + args.epoch_num + '.pth'))
+if args.model_folder == -1:
+    featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + args.epoch_num + '.pth'))
+else:
+    featureNet.load_state_dict(torch.load('saved_models_ce_masked{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
+
 featureNet.cuda()
 featureNet.eval()
 
@@ -86,7 +91,11 @@ featureNet.eval()
 # maskNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
-fcNet.load_state_dict(torch.load("saved_models_ce_masked/fcNet_"+ args.epoch_num + ".pth"))
+if args.model_folder == -1:
+    fcNet.load_state_dict(torch.load("saved_models_ce_masked/fcNet_"+ args.epoch_num + ".pth"))
+else:
+    fcNet.load_state_dict(torch.load("saved_models_ce_masked{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
+
 fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
