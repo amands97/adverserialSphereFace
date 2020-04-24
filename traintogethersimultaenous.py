@@ -1,6 +1,15 @@
 # CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
 
+# --lr 0.00002 --lrfc 0.1 --mom 0.000009 --momfc 0.09 --checkpoint 1 first 150
+# got worse and worse
 
+# --lr 0.000005 --lrfc 0.01 --mom 0.000009 --momfc 0.09 --checkpoint 1 later 148
+# better at the first epoch. shows promising increase. 50 - 60% occlusion and mask is doing good in this region
+
+# --lr 0.00002 --lrfc 0.01 --mom 0.000009 --momfc 0.09 --checkpoint 1 last 150
+
+
+#  --lr 0.000005 --lrfc 0.01 --mom 0.000009 --momfc 0.09 --checkpoint 1 later 148
 # python train.py --dataset casia.zip --bs 10 --lr 0.0001 --lrfc 0.00005 --mom 0.0000 --momfc 0.0000 --checkpoint blok
 #  fine lr 0.01 and lrfc 0.0000001 use mom 0. maybe try 0.001
 
@@ -37,6 +46,8 @@ parser.add_argument('--lrfc', default=0.1, type=float, help='learning rate class
 parser.add_argument('--bs', default=256, type=int, help='')
 parser.add_argument('--mom', default=0.9, type=float, help='momentum')
 parser.add_argument('--momfc', default=0.9, type=float, help='momentum classifier')
+parser.add_argument('--startfolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
+parser.add_argument('--savefolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 args = parser.parse_args()
@@ -172,14 +183,21 @@ if args.checkpoint == -1:
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
-    featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+    if args.startfolder == -1:
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+    else:
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
     # maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+    if args.startfolder == -1:
+        fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+    else:
+        fcNet.load_state_dict(torch.load('saved_models_ce_masked' + str(args.startfolder) + '/fcNet_'+ str(args.checkpoint)+ '.pth'))
+
     laplacianKernel = getKernel()
 # else:
 #     featureNet = getattr(net_sphere,args.net)()
@@ -232,9 +250,13 @@ for epoch in range(0, 100):
         continue
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
-    save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
-    save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
-    save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
-
+    if args.savefolder == -1:
+        save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
+        save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
+        save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
+    else:
+        save_model(featureNet, 'saved_models_ce_masked{}/featureNet_{}.pth'.format(args.savefolder, epoch))
+        save_model(maskNet, 'saved_models_ce_masked{}/maskNet_{}.pth'.format(args.savefolder,epoch))
+        save_model(fcNet, 'saved_models_ce_masked{}/fcNet_{}.pth'.format(args.savefolder,epoch))
 print('finish: time={}\n'.format(dt()))
 
