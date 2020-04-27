@@ -99,7 +99,7 @@ zfile = zipfile.ZipFile(args.lfw)
 with open('data/ardata_pairs.txt') as f:
     pairs_lines = f.readlines()
 
-pairs_lines = pairs_lines[:100]
+pairs_lines = pairs_lines
 for i in range(len(pairs_lines)):
     if (i%100 == 0):
         print("done:", i)
