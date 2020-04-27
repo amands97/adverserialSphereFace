@@ -234,10 +234,10 @@ for i in range(6000):
     # sys.exit()
 
 
-    # heatmap = occlusion(featureNet, fcNet, img[:1], img[2:3], occ_size = 30, occ_stride = 5, occ_pixel = 0.5)
-    # print(torch.max(heatmap).data)
-    # imgplot = sns.heatmap(heatmap, xticklabels=False, yticklabels=False, vmax=torch.max(heatmap).data)
-    # figure = imgplot.get_figure()
+    heatmap = occlusion(featureNet, fcNet, img[:1], img[2:3], occ_size = 30, occ_stride = 5, occ_pixel = 0.5)
+    print(torch.max(heatmap).data)
+    imgplot = sns.heatmap(heatmap, xticklabels=False, yticklabels=False, vmax=torch.max(heatmap).data)
+    figure = imgplot.get_figure()
     # print(heatmap)
     # print("done")
     output = featureNet(img)
