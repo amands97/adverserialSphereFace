@@ -67,7 +67,7 @@ if args.model_folder == -1:
 else:
     featureNet.load_state_dict(torch.load('saved_models_ce_masked{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
 
-featureNet.cuda()
+# featureNet.cuda()
 featureNet.eval()
 
 
@@ -77,7 +77,7 @@ if args.model_folder == -1:
 else:
     fcNet.load_state_dict(torch.load("saved_models_ce_masked{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
 
-fcNet.cuda()
+# fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
 
@@ -99,7 +99,9 @@ zfile = zipfile.ZipFile(args.lfw)
 with open('data/ardata_pairs.txt') as f:
     pairs_lines = f.readlines()
 
-pairs_lines = pairs_lines
+pairs_lines = pairs_lines[:10]
+count1 = 0
+count2 = 0
 for i in range(len(pairs_lines)):
     if (i%100 == 0):
         print("done:", i)
@@ -109,10 +111,12 @@ for i in range(len(pairs_lines)):
         sameflag = 1
         name1 = p[0]+'/'+'{:02}.bmp'.format(int(p[1]))
         name2 = p[0]+'/'+'{:02}.bmp'.format(int(p[2]))
+        count1 += 1
     if 4==len(p):
         sameflag = 0
         name1 = p[0]+'/'+'{:02}.bmp'.format(int(p[1]))
         name2 = p[2]+'/'+'{:02}.bmp'.format(int(p[3]))
+        count2 += 1
     # print(name1, name2)
     # pass
     img1 = cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1)
@@ -125,13 +129,14 @@ for i in range(len(pairs_lines)):
     # cv2.waitKey()
     # continue
 
+
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     for i in range(len(imglist)):
         imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1,3,112,96))
         imglist[i] = (imglist[i]-127.5)/128.0
 
     img = np.vstack(imglist)
-    img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
+    img = Variable(torch.from_numpy(img).float(),volatile=True)#.cuda()
 
     # print(img.shape)
     # from matplotlib import pyplot as  plt
@@ -167,6 +172,7 @@ for i in range(len(pairs_lines)):
     f = output.data
     f1,f2 = f[0],f[2]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
+    print(cosdistance)
     predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
 
 
@@ -180,4 +186,5 @@ for idx, (train, test) in enumerate(folds):
     best_thresh = find_best_threshold(thresholds, predicts[train])
     accuracy.append(eval_acc(best_thresh, predicts[test]))
     thd.append(best_thresh)
+print(accuracy)
 print('LFWACC={:.4f} std={:.4f} thd={:.4f}'.format(np.mean(accuracy), np.std(accuracy), np.mean(thd)))
