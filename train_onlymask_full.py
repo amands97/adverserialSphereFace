@@ -37,6 +37,8 @@ parser.add_argument('--lrfc', default=0.1, type=float, help='learning rate class
 parser.add_argument('--bs', default=256, type=int, help='')
 parser.add_argument('--mom', default=0.9, type=float, help='momentum')
 parser.add_argument('--momfc', default=0.9, type=float, help='momentum classifier')
+parser.add_argument('--startfolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
+parser.add_argument('--savefolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 args = parser.parse_args()
@@ -156,7 +158,6 @@ def train(epoch,args):
         batch_idx += 1
     print('')
 
-
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
@@ -171,14 +172,21 @@ if args.checkpoint == -1:
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
-    featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+    if args.startfolder == -1:
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+    else:
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
     # maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+    if args.startfolder == -1:
+        fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+    else:
+        fcNet.load_state_dict(torch.load('saved_models_ce_masked' + str(args.startfolder) + '/fcNet_'+ str(args.checkpoint)+ '.pth'))
+
     laplacianKernel = getKernel()
 # else:
 #     featureNet = getattr(net_sphere,args.net)()
