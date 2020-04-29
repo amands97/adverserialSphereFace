@@ -31,7 +31,7 @@ np.warnings.filterwarnings('ignore')
 from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
-import adversary_full
+import adversary_full as adversary
 from gumbel import gumbel_softmax
 from torch.nn.functional import conv2d # for the kernel
 from torch.utils.tensorboard import SummaryWriter
