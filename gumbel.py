@@ -44,15 +44,8 @@ def gumbel_softmax(logits1, tau=1, dim=-1):
     # if hard:
         # Straight through.
     index = y_soft.max(dim, keepdim=True)[1]
-    # print(index.shape)
-    
-    # print(index)
     y_hard = torch.zeros_like(logits).scatter_(dim, index, 1.0)
     ret = y_hard - y_soft.detach() + y_soft
-    # print(ret[])
-    # print(ret.shape)
-    # print(ret[:, :, :, :,  0].shape)
-    # print(ret[0, 0, :, :, 0 ])
     return ret[..., 0]
 
 
@@ -61,3 +54,7 @@ def gumbel_softmax(logits1, tau=1, dim=-1):
 # a = gumbel_softmax(logits)
 # print(a[0, 0])
 # # 
+
+
+def gumbel_topk(logits, tau=1, dim=-1):
+  pass

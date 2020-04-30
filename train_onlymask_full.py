@@ -239,9 +239,14 @@ for epoch in range(0, 100):
         continue
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
-    save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
-    save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
-    save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
+    if args.savefolder == -1:
+        save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
+        save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
+        save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
+    else:
+        save_model(featureNet, 'saved_models_ce_masked{}/featureNet_{}.pth'.format(args.savefolder, epoch))
+        save_model(maskNet, 'saved_models_ce_masked{}/maskNet_{}.pth'.format(args.savefolder,epoch))
+        save_model(fcNet, 'saved_models_ce_masked{}/fcNet_{}.pth'.format(args.savefolder,epoch))
 
 print('finish: time={}\n'.format(dt()))
 
