@@ -102,7 +102,7 @@ def train(epoch,args):
         else:
             correct += predicted.eq(targets.data).sum()
         lossAdv = criterion(outputs, targets.detach())
-        # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
+        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
         else:
@@ -114,9 +114,9 @@ def train(epoch,args):
             lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
         print(lossSize1) 
         writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
-        # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
+        writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-        loss = (-lossAdv)  + lossSize/10000
+        loss = (-lossAdv)  + lossSize/10000 + laplacianKernel
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()
