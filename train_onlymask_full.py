@@ -113,10 +113,10 @@ def train(epoch,args):
         elif lossSize1 < 0.10:
             lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
         print(lossSize1) 
-        writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
-        writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
+        writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
+        writer.add_scalar('Loss/adv-compactness', lossCompact, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-        loss = (-lossAdv)  + lossSize/10000 + laplacianKernel
+        loss = (-lossAdv)  + lossSize/10000 + lossCompact
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()

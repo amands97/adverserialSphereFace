@@ -77,7 +77,7 @@ use_cuda = torch.cuda.is_available()
 
 
 featureNet = getattr(net_sphere,args.net)()
-featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
+# featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
 # featureNet.cuda()
 featureNet.eval()
 
@@ -88,7 +88,7 @@ maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_" + args.epoch_num +
 maskNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
-fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
+# fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
 # fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
@@ -159,6 +159,7 @@ for i in range(6000):
     output = featureNet(img)
     # print(output)
     mask = maskNet(img)
+    print(mask)
     mask = gumbel_softmax(mask)
     # mask = nn.Upsample(scale_factor = 16, mode = 'nearest')(mask)
     print(mask.shape)
