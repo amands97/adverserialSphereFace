@@ -1,7 +1,9 @@
 import torch
 from torch.nn.functional import conv2d
 x = torch.ones((1,512, 7, 6))
-x[0, 0, 0, 0] = 0
+# x[0, 0, 0, 0] = 0
+# x[0, 0, 0, 1] = 0
+
 print(x)
 kernel = torch.ones((3,3))
 mid = 1
