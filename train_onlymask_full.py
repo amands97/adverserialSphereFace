@@ -65,7 +65,8 @@ def train(epoch,args):
     while True:
         if batch_idx % 50 == 0 and batch_idx > 0:
             print(batch_idx)
-
+        if batch_idx == 1500:
+            break
         n_iter += 1
         img,label = ds.get()
         if img is None: break
@@ -115,7 +116,7 @@ def train(epoch,args):
         writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
         # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-        loss = (-lossAdv)  + lossSize
+        loss = (-lossAdv)  + lossSize/10000
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
         loss.backward()
