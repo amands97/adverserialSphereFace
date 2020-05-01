@@ -114,9 +114,9 @@ def train(epoch,args):
         print(inputs.size())
         features = featureNet(inputs)
         print(features.size())
-
+        print(maskNet(features).size())
         outputs = fcNet(features) 
-        print(outputs.size())
+        print(outputs[0].size())
         import sys
         sys.exit()
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
