@@ -194,31 +194,31 @@ if args.checkpoint == -1:
 else:
     featureNet = getattr(net_sphere,args.net)()
     if args.startfolder == -1:
-        featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+        featureNet.load_state_dict(torch.load('saved_models_ce_mid/featureNet_' + str(args.checkpoint) + '.pth'))
     else:
-        featureNet.load_state_dict(torch.load('saved_models_ce_masked'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
+        featureNet.load_state_dict(torch.load('saved_models_ce_mid'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
-    # maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
+    # maskNet.load_state_dict(torch.load('saved_models_ce_mid/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
     if args.startfolder == -1:
-        fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+        fcNet.load_state_dict(torch.load('saved_models_ce_mid/fcNet_'+ str(args.checkpoint)+ '.pth'))
     else:
-        fcNet.load_state_dict(torch.load('saved_models_ce_masked' + str(args.startfolder) + '/fcNet_'+ str(args.checkpoint)+ '.pth'))
+        fcNet.load_state_dict(torch.load('saved_models_ce_mid' + str(args.startfolder) + '/fcNet_'+ str(args.checkpoint)+ '.pth'))
 
     laplacianKernel = getKernel()
 # else:
 #     featureNet = getattr(net_sphere,args.net)()
-#     featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+#     featureNet.load_state_dict(torch.load('saved_models_ce_mid/featureNet_' + str(args.checkpoint) + '.pth'))
 
 #     maskNet = getattr(adversary, "MaskMan")()
-#     maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
+#     maskNet.load_state_dict(torch.load('saved_models_ce_mid/maskNet_' + str(args.checkpoint) + '.pth'))
 #     fcNet = getattr(net_sphere, "fclayers")()
 #     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
 #     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-#     fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
+#     fcNet.load_state_dict(torch.load('saved_models_ce_mid/fcNet_'+ str(args.checkpoint)+ '.pth'))
 #     laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
@@ -261,12 +261,12 @@ for epoch in range(0, 100):
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
     if args.savefolder == -1:
-        save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
-        save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
-        save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
+        save_model(featureNet, 'saved_models_ce_mid/featureNet_{}.pth'.format(epoch))
+        save_model(maskNet, 'saved_models_ce_mid/maskNet_{}.pth'.format(epoch))
+        save_model(fcNet, 'saved_models_ce_mid/fcNet_{}.pth'.format(epoch))
     else:
-        save_model(featureNet, 'saved_models_ce_masked{}/featureNet_{}.pth'.format(args.savefolder, epoch))
-        save_model(maskNet, 'saved_models_ce_masked{}/maskNet_{}.pth'.format(args.savefolder,epoch))
-        save_model(fcNet, 'saved_models_ce_masked{}/fcNet_{}.pth'.format(args.savefolder,epoch))
+        save_model(featureNet, 'saved_models_ce_mid{}/featureNet_{}.pth'.format(args.savefolder, epoch))
+        save_model(maskNet, 'saved_models_ce_mid{}/maskNet_{}.pth'.format(args.savefolder,epoch))
+        save_model(fcNet, 'saved_models_ce_mid{}/fcNet_{}.pth'.format(args.savefolder,epoch))
 print('finish: time={}\n'.format(dt()))
 

@@ -16,7 +16,7 @@ class MaskMan(nn.Module):
 
 
 # class UNet(nn.Module):
-    def __init__(self, n_channels=3, n_classes=1, bilinear=True):
+    def __init__(self, n_channels=512, n_classes=1, bilinear=True):
         super(MaskMan, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
