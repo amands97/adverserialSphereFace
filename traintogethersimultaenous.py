@@ -101,7 +101,6 @@ def train(epoch,args):
             # newNet.train()
             featureNet.train()
             fcNet.train()
-        # if epoch % 2 == 1:
         maskNet.zero_grad()
         featureNet.zero_grad()
         fcNet.zero_grad()
@@ -111,14 +110,14 @@ def train(epoch,args):
         # print(mask.shape, inputs.shape)
         # mask = upsampler(mask)
         # maskedFeatures = torch.mul(mask, inputs)
-        print(inputs.size())
+        # print(inputs.size())
         features = featureNet(inputs)
-        print(features.size())
-        print(maskNet(features).size())
+        # print(features.size())
+        # print(maskNet(features).size())
         mask =gumbel_softmax(maskNet(features.detach()))
         maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(features) 
-        print(outputs[0].size())
+        # print(outputs[0].size())
         # import sys
         # sys.exit()
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
