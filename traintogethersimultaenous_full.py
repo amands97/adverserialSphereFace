@@ -85,7 +85,7 @@ def train(epoch,args):
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         inputs, targets = Variable(inputs), Variable(targets)
 
-        if batch_idx % 25 == 0:
+        if batch_idx % 25 == 0 and batch_idx != 0:
             # newNet.eval()
             featureNet.eval()
             fcNet.eval()
