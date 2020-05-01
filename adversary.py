@@ -42,30 +42,17 @@ class MaskMan(nn.Module):
         x4 = self.down3(x3)
 
         x5 = self.down4(x4)
-        # print(x5.shape)
-
-        # print(x4.shape)
-        x5 = self.outc2(x5)
-        # print(x5.shape, "aaaaaaaaaaaa")
-        return x5
+        # x5 = self.outc2(x5)
+        # return x5
         x = self.up1(x5, x4)
-        # print(x.shape)
         x = self.up2(x, x3)
-        # return this
-        # conv this here and return
-        x = self.outc1(x)
-        return x
+        # x = self.outc1(x)
+        # return x
 
         x = self.up3(x, x2)
-        # print(x.shape)
-
         x = self.up4(x, x1)
-        # print(x.shape)
 
         logits = self.outc(x)
-        # print(logits.shape)
-        # import sys
-        # sys.exit()
         return logits
 
 class MaskMan2(nn.Module):
