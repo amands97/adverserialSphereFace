@@ -115,10 +115,12 @@ def train(epoch,args):
         features = featureNet(inputs)
         print(features.size())
         print(maskNet(features).size())
+        mask =gumbel_softmax(maskNet(features.detach()))
+        maskedFeatures = torch.mul(mask, features)
         outputs = fcNet(features) 
         print(outputs[0].size())
-        import sys
-        sys.exit()
+        # import sys
+        # sys.exit()
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs1.data, 1)
         total += targets.size(0)
@@ -134,11 +136,11 @@ def train(epoch,args):
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
         lossSize = 0
         if lossSize1 > 0.25:
-            lossSize = (100*(lossSize1 - 0.25)).pow(2)
+            lossSize = ((lossSize1 - 0.25)).pow(2)
         elif lossSize1 < 0.10:
-            lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
+            lossSize = (100 * (0.10 - lossSize1).pow(2))
         # print(lossSize1) 
-        writer.add_scalar('Loss/adv-classification', -lossAdv/10, n_iter)
+        writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
         # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize, n_iter)
         loss = (-lossAdv)  + lossSize
@@ -150,17 +152,16 @@ def train(epoch,args):
         # set this optimizer mask grad to be zero again
         optimizerMask.zero_grad()
         maskNet.zero_grad()
-        newNet.zero_grad()
-        # featureNet.zero_grad()
-        # fcNet.zero_grad()
+        featureNet.zero_grad()
+        fcNet.zero_grad()
         optimizerFC.zero_grad()
+        features = featureNet(inputs)
 
-        mask = gumbel_softmax(maskNet(inputs))
+        mask = gumbel_softmax(maskNet(features))
         # mask = upsampler(mask)
-        maskedFeatures = torch.mul(mask.detach(), inputs).detach()
-        outputs = newNet(maskedFeatures)
+        maskedFeatures = torch.mul(mask, features)
+        outputs = fcNet(maskedFeatures)
         total += targets.size(0)
-
 
         lossC = criterion(outputs, targets.detach())
         lossClassification = lossC.data

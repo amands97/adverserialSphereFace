@@ -16,11 +16,10 @@ class MaskMan(nn.Module):
 
 
 # class UNet(nn.Module):
-    def __init__(self, n_channels=512, n_classes=1, bilinear=True):
+    def __init__(self, n_channels=512, n_classes=1):
         super(MaskMan, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
-        self.bilinear = bilinear
 
         self.conv1 = nn.Conv2d(512,128,1,1,0)
         self.conv2 = nn.Conv2d(128,1,1,1,0)
