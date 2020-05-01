@@ -22,31 +22,14 @@ class MaskMan(nn.Module):
         self.n_classes = n_classes
         self.bilinear = bilinear
 
-        self.fc1 = nn.Linear(512, 256)
-        self.fc2 = nn.Linear(256, 1)
-        self.relu1 = nn.PReLU(256)
+        self.conv1 = nn.Conv2d(512,128,1,1,0)
+        self.conv2 = nn.Conv2d(128,1,1,1,0)
+        self.relu1 = nn.PReLU(128)
         self.relu2 = nn.PReLU(1)
     def forward(self, x):
-        # x1 = self.inc(x)
-        # x2 = self.down1(x1)
-        # x3 = self.down2(x2)
-        # x4 = self.down3(x3)
-
-        # x5 = self.down4(x4)
-        # # x5 = self.outc2(x5)
-        # # return x5
-        # x = self.up1(x5, x4)
-        # x = self.up2(x, x3)
-        # # x = self.outc1(x)
-        # # return x
-
-        # x = self.up3(x, x2)
-        # x = self.up4(x, x1)
-
-        # logits = self.outc(x)
-        x = self.fc1(x)
+        x = self.conv1(x)
         x = self.relu1(x)
-        x = self.fc2(x)
+        x = self.conv2(x)
         x = self.relu2(x)
         return x
 
