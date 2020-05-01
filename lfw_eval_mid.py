@@ -145,6 +145,9 @@ for i in range(6000):
     img = np.vstack(imglist)
     if args.gpu == 1:
         img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
+    else:
+        img = Variable(torch.from_numpy(img).float(),volatile=True)
+
     # output = net(img)
     output = featureNet(img)
     # print(output)
