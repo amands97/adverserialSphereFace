@@ -86,9 +86,10 @@ def train(epoch,args):
         inputs, targets = Variable(inputs), Variable(targets)
 
         if batch_idx % 25 == 0:
-            newNet.eval()
-                
-            outputs = newNet(inputs)
+            # newNet.eval()
+            featureNet.eval()
+            fcNet.eval()
+            outputs = featureNet(fcNet(inputs))
             outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
             _, predicted = torch.max(outputs1.data, 1)
             total2 += targets.size(0)
@@ -97,19 +98,27 @@ def train(epoch,args):
             else:
                 correct2 += predicted.eq(targets.data).sum()
             writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
-            newNet.train()
+            # newNet.train()
+            featureNet.train()
+            fcNet.train()
         # if epoch % 2 == 1:
         maskNet.zero_grad()
-        # featureNet.zero_grad()
-        # fcNet.zero_grad()
-        newNet.zero_grad()
+        featureNet.zero_grad()
+        fcNet.zero_grad()
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
-        mask =gumbel_softmax(maskNet(inputs))
+        # mask =gumbel_softmax(maskNet(inputs))
         # print(mask.shape, inputs.shape)
         # mask = upsampler(mask)
-        maskedFeatures = torch.mul(mask, inputs)
-        outputs = newNet(maskedFeatures)
+        # maskedFeatures = torch.mul(mask, inputs)
+        print(inputs.size())
+        features = featureNet(inputs)
+        print(features.size())
+
+        outputs = fcNet(features) 
+        print(outputs.size())
+        import sys
+        sys.exit()
         outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
         _, predicted = torch.max(outputs1.data, 1)
         total += targets.size(0)
@@ -218,9 +227,9 @@ if use_cuda:
     maskNet.cuda()
     fcNet.cuda()
     laplacianKernel =  laplacianKernel.cuda()
-newNet = nn.Sequential(featureNet, fcNet)
+# newNet = nn.Sequential(featureNet, fcNet)
 criterion = net_sphere.AngleLoss()
-optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+optimizerFC = optim.SGD(list(featureNet.parameters() + fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 
 # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
@@ -237,9 +246,9 @@ for epoch in range(0, 100):
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
-            optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+            # optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
             
-            # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+            optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
             optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
