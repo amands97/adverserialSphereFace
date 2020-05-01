@@ -22,6 +22,47 @@ class MaskMan(nn.Module):
         self.n_classes = n_classes
         self.bilinear = bilinear
 
+        self.fc1 = nn.Linear(512, 256)
+        self.fc2 = nn.Linear(256, 1)
+        self.relu1 = nn.PReLU(256)
+        self.relu2 = nn.PReLU(1)
+    def forward(self, x):
+        # x1 = self.inc(x)
+        # x2 = self.down1(x1)
+        # x3 = self.down2(x2)
+        # x4 = self.down3(x3)
+
+        # x5 = self.down4(x4)
+        # # x5 = self.outc2(x5)
+        # # return x5
+        # x = self.up1(x5, x4)
+        # x = self.up2(x, x3)
+        # # x = self.outc1(x)
+        # # return x
+
+        # x = self.up3(x, x2)
+        # x = self.up4(x, x1)
+
+        # logits = self.outc(x)
+        x = self.fc1(x)
+        x = self.relu1(x)
+        x = self.fc2(x)
+        x = self.relu2(x)
+        return x
+
+
+
+class MaskMan2(nn.Module):
+    """ Full assembly of the parts to form the complete network """
+
+
+# class UNet(nn.Module):
+    def __init__(self, n_channels=512, n_classes=1, bilinear=True):
+        super(MaskMan, self).__init__()
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.bilinear = bilinear
+
         self.inc = DoubleConv(n_channels, 64)
         self.down1 = Down(64, 128)
         self.down2 = Down(128, 256)
@@ -55,7 +96,7 @@ class MaskMan(nn.Module):
         logits = self.outc(x)
         return logits
 
-class MaskMan2(nn.Module):
+class MaskMan3(nn.Module):
     def __init__(self,  in_features):
         super(MaskMan, self).__init__()
         self.in_features = in_features
