@@ -90,7 +90,7 @@ def train(epoch,args):
             # newNet.eval()
             featureNet.eval()
             fcNet.eval()
-            outputs = featureNet(fcNet(inputs))
+            outputs = fcNet(featureNet(inputs))
             outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
             _, predicted = torch.max(outputs1.data, 1)
             total2 += targets.size(0)
