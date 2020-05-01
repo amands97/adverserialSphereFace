@@ -229,9 +229,9 @@ if use_cuda:
     laplacianKernel =  laplacianKernel.cuda()
 # newNet = nn.Sequential(featureNet, fcNet)
 criterion = net_sphere.AngleLoss()
-optimizerFC = optim.SGD(list(featureNet.parameters() + fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+# optimizerFC = optim.SGD(list(featureNet.parameters() + fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 
-# optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
 
 # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)

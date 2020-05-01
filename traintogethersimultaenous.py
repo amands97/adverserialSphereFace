@@ -68,7 +68,7 @@ def train(epoch,args):
     total2 = 0
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
-        bs=args.bs,shuffle=True,nthread=6,imagesize=128)
+        bs=args.bs,shuffle=True,nthread=1,imagesize=128)
 
     global n_iter
     while True:
