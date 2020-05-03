@@ -174,7 +174,7 @@ for i in range(6000):
         indices = get_random_indices(args.level)
         mask = torch.ones((1, 7, 6))
         mask[0, indices[:, 0], indices[:, 1]] = 0
-        mask = F.interpolate(mask, (1, 112, 96))
+        mask = F.interpolate(mask, scale_factor=16)
         img[i] = ((img[i] * mask))
     
     output = featureNet(img)
