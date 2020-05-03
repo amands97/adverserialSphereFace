@@ -172,9 +172,10 @@ for i in range(6000):
 
     for i, out in enumerate(img):
         indices = get_random_indices(args.level)
-        mask = torch.ones((1, 7, 6))
-        mask[0, indices[:, 0], indices[:, 1]] = 0
+        mask = torch.ones((1, 1, 7, 6))
+        mask[0, 0, indices[:, 0], indices[:, 1]] = 0
         mask = F.interpolate(mask, scale_factor=16)
+        mask = mask[0]
         print(mask.size())
         img[i] = ((img[i] * mask))
     
