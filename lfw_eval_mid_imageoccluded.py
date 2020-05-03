@@ -182,12 +182,12 @@ for i in range(6000):
         img[i] = ((img[i] * mask))
     
     output = featureNet(img)
-    for i, out in enumerate(output):
-        indices = get_random_indices(level)
-        mask = torch.ones((1, 7, 6))
-        mask[0, indices[:, 0], indices[:, 1]] = 0
+    # for i, out in enumerate(output):
+    #     indices = get_random_indices(level)
+    #     mask = torch.ones((1, 7, 6))
+    #     mask[0, indices[:, 0], indices[:, 1]] = 0
 
-        output[i] = ((output[i] * mask))
+    #     output[i] = ((output[i] * mask))
     
     # print(output)
     output = fcNet(output)
