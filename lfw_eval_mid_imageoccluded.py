@@ -171,7 +171,7 @@ for i in range(6000):
     # output = net(img)
 
     for i, out in enumerate(img):
-        indices = get_random_indices(level)
+        indices = get_random_indices(args.level)
         mask = torch.ones((1, 7, 6))
         mask[0, indices[:, 0], indices[:, 1]] = 0
         mask = F.interpolate(mask, (1, 112, 96))

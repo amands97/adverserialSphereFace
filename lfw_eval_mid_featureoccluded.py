@@ -172,7 +172,7 @@ for i in range(6000):
     # output = net(img)
     output = featureNet(img)
     for i, out in enumerate(output):
-        indices = get_random_indices(level)
+        indices = get_random_indices(args.level)
         mask = torch.ones((1, 7, 6))
         mask[0, indices[:, 0], indices[:, 1]] = 0
 
