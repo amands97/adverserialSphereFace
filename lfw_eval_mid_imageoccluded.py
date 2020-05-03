@@ -177,6 +177,8 @@ for i in range(6000):
         mask = F.interpolate(mask, scale_factor=16)
         mask = mask[0]
         print(mask.size())
+        if args.gpu == 1:
+            mask = mask.cuda()
         img[i] = ((img[i] * mask))
     
     output = featureNet(img)
