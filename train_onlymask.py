@@ -76,6 +76,9 @@ def train(epoch,args):
             print(batch_idx)
             # if batch_idx > 100:
             #     break
+        
+        if batch_idx == 250:
+            break
 
         n_iter += 1
         img,label = ds.get()
