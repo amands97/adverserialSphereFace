@@ -50,6 +50,7 @@ parser.add_argument('--startfolder', default=-1, type=int, help='if use checkpoi
 parser.add_argument('--savefolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
+parser.add_argument('--prob', '-p', default = 0.5, type =float)
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
@@ -155,7 +156,7 @@ def train(epoch,args):
         fcNet.zero_grad()
         optimizerFC.zero_grad()
         features = featureNet(inputs)
-        if np.random.choice([0,1], 1, p = [0.5, 0.5])[0] == 1:
+        if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
             mask = gumbel_softmax(maskNet(features))
             # mask = upsampler(mask)
             maskedFeatures = torch.mul(mask, features)
