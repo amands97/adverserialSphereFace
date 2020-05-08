@@ -241,6 +241,8 @@ criterion = net_sphere.AngleLoss()
 optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
 
+
+# optim.Adadelta(params, lr=1.0, rho=0.9, eps=1e-06, weight_decay=0)
 # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
 # optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
 
