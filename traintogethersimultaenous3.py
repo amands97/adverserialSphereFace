@@ -1,5 +1,5 @@
 # this one has different ratio of lossadv and lossize
-
+# also this has a probability of mask
 from __future__ import print_function
 
 import torch
@@ -146,7 +146,6 @@ def train(epoch,args):
         # mask = upsampler(mask)
         # maskedFeatures = torch.mul(mask.detach(), inputs).detach()
         outputs = newNet(maskedFeatures)
-        total += targets.size(0)
 
 
         lossC = criterion(outputs, targets.detach())
