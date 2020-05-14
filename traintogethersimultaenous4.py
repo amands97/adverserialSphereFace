@@ -94,7 +94,7 @@ def train(epoch,args):
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
 
-        if batch_idx % 2 == 0:
+        if batch_idx % 2 == 2:
             mask =gumbel_softmax(maskNet(inputs))
             mask = upsampler(mask)
             maskedFeatures = torch.mul(mask, inputs)
@@ -106,7 +106,7 @@ def train(epoch,args):
                 correct += predicted.eq(targets.data).cpu().sum()
             else:
                 correct += predicted.eq(targets.data).sum()
-            lossAdv = criterion(outputs, targets.detach())
+            lossAdv = criterion(outputs, targets)
             # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
             if use_cuda:
                 lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
@@ -149,7 +149,7 @@ def train(epoch,args):
             outputs = newNet(maskedFeatures)
 
 
-            lossC = criterion(outputs, targets.detach())
+            lossC = criterion(outputs, targets)
             lossClassification = lossC.data
             lossC.backward()
             optimizerFC.step()
