@@ -94,7 +94,7 @@ def train(epoch,args):
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
 
-        if batch_idx % 2 == 2:
+        if batch_idx % 2 == 0:
             mask =gumbel_softmax(maskNet(inputs))
             mask = upsampler(mask)
             maskedFeatures = torch.mul(mask, inputs)
