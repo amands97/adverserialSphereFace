@@ -158,7 +158,7 @@ def train(epoch,args):
 
             writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
             # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
-            writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
+            # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
             writer.add_scalar('Accuracy/correct', correct, n_iter)
             
 
