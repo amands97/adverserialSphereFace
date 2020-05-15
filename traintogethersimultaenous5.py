@@ -149,7 +149,7 @@ def train(epoch,args):
             outputs = newNet(maskedFeatures)
 
 
-            lossC = criterion(outputs, targets)
+            lossC = criterion2(outputs, targets)
             lossClassification = lossC.data
             lossC.backward()
             optimizerFC.step()
@@ -216,6 +216,8 @@ if use_cuda:
     laplacianKernel =  laplacianKernel.cuda()
 newNet = nn.Sequential(featureNet, fcNet)
 criterion = net_sphere.AngleLoss()
+criterion2 = net_sphere.AngleLoss()
+
 # optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 
 # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
@@ -225,7 +227,7 @@ criterion = net_sphere.AngleLoss()
 # optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
 
 
-criterion2 = torch.nn.CrossEntropyLoss()
+# criterion2 = torch.nn.CrossEntropyLoss()
 upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
