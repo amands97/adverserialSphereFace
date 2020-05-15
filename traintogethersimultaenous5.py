@@ -134,8 +134,8 @@ def train(epoch,args):
             # # featureNet.zero_grad()
             # # fcNet.zero_grad()
             # optimizerFC.zero_grad()
-            
-            if 100 * (correct2)/(total2 * 1.0) > 20 and np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
+            # 100 * (correct2)/(total2 * 1.0) > 20 and 
+            if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
                 mask = gumbel_softmax(maskNet(inputs))
                 mask = upsampler(mask)
                 maskedFeatures = torch.mul(mask.detach(), inputs)
