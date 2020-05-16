@@ -125,17 +125,17 @@ def train(epoch,args):
             writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
             lossd = loss.data
 
-            a = list(maskNet.parameters())[0].clone()
-            a2 = list(newNet.parameters())[0].clone()
+            # a = list(maskNet.parameters())[0].clone()
+            # a2 = list(newNet.parameters())[0].clone()
             loss.backward()
             optimizerMask.step()
 
-            b = list(maskNet.parameters())[0].clone()
-            b2 = list(newNet.parameters())[0].clone()
-            print("------")
+            # b = list(maskNet.parameters())[0].clone()
+            # b2 = list(newNet.parameters())[0].clone()
+            # print("------")
 
-            print(torch.equal(a,b))
-            print(torch.equal(a2, b2))
+            # print(torch.equal(a,b))
+            # print(torch.equal(a2, b2))
             # import sys
             # sys.exit()
         else:
@@ -163,16 +163,16 @@ def train(epoch,args):
 
             lossC = criterion2(outputs, targets)
             lossClassification = lossC.data
-            a = list(maskNet.parameters())[0].clone()
-            a2 = list(newNet.parameters())[0].clone()
+            # a = list(maskNet.parameters())[0].clone()
+            # a2 = list(newNet.parameters())[0].clone()
             lossC.backward()
             optimizerFC.step()
 
-            b = list(maskNet.parameters())[0].clone()
-            b2 = list(newNet.parameters())[0].clone()
-            print("---")
-            print(torch.equal(a,b))
-            print(torch.equal(a2, b2))
+            # b = list(maskNet.parameters())[0].clone()
+            # b2 = list(newNet.parameters())[0].clone()
+            # print("---")
+            # print(torch.equal(a,b))
+            # print(torch.equal(a2, b2))
             classification_loss += lossClassification
             # train_loss += loss.data
 
@@ -181,8 +181,8 @@ def train(epoch,args):
             # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
             writer.add_scalar('Accuracy/correct', correct, n_iter)
             
-            import sys
-            sys.exit()
+            # import sys
+            # sys.exit()
         batch_idx += 1
     print('')
 
