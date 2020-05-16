@@ -132,6 +132,7 @@ def train(epoch,args):
 
             b = list(maskNet.parameters())[0].clone()
             b2 = list(newNet.parameters())[0].clone()
+            print("------")
 
             print(torch.equal(a,b))
             print(torch.equal(a2, b2))
@@ -162,8 +163,16 @@ def train(epoch,args):
 
             lossC = criterion2(outputs, targets)
             lossClassification = lossC.data
+            a = list(maskNet.parameters())[0].clone()
+            a2 = list(newNet.parameters())[0].clone()
             lossC.backward()
             optimizerFC.step()
+            print("---")
+            print(torch.equal(a,b))
+            print(torch.equal(a2, b2))
+            b = list(maskNet.parameters())[0].clone()
+            b2 = list(newNet.parameters())[0].clone()
+
             classification_loss += lossClassification
             # train_loss += loss.data
 
