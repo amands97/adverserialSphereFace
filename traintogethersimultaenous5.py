@@ -140,12 +140,12 @@ def train(epoch,args):
             # sys.exit()
         # else:
             # set this optimizer mask grad to be zero again
-            optimizerMask.zero_grad()
-            maskNet.zero_grad()
-            newNet.zero_grad()
-            # # featureNet.zero_grad()
-            # # fcNet.zero_grad()
-            optimizerFC.zero_grad()
+        optimizerMask.zero_grad()
+        maskNet.zero_grad()
+        newNet.zero_grad()
+        # # featureNet.zero_grad()
+        # # fcNet.zero_grad()
+        optimizerFC.zero_grad()
             # 100 * (correct2)/(total2 * 1.0) > 20 and 
         if 100 * (correct2)/(total2 * 1.0) > 10 and np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
             mask = gumbel_softmax(maskNet(inputs))
