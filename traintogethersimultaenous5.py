@@ -8,6 +8,8 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 torch.backends.cudnn.bencmark = True
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning)
 import os,sys
 import cv2
 import random,datetime
@@ -148,6 +150,7 @@ def train(epoch,args):
         optimizerFC.zero_grad()
             # 100 * (correct2)/(total2 * 1.0) > 20 and 
         if 100 * (correct2)/(total2 * 1.0) > 10 and np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
+            print(batch_idx, "mask way")
             mask = gumbel_softmax(maskNet(inputs))
             mask = upsampler(mask)
             maskedFeatures = torch.mul(mask.detach(), inputs)
