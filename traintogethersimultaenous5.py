@@ -22,8 +22,8 @@ import net_sphere
 import adversary
 from gumbel import gumbel_softmax
 from torch.nn.functional import conv2d # for the kernel
-# from torch.utils.tensorboard import SummaryWriter
-from tensorboardX import SummaryWriter
+from torch.utils.tensorboard import SummaryWriter
+# from tensorboardX import SummaryWriter
 from aux import *
 # to import all the necessary changes
 parser = argparse.ArgumentParser(description='PyTorch sphereface')
