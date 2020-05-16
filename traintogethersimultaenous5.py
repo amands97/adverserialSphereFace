@@ -9,7 +9,7 @@ from torch.autograd import Variable
 torch.backends.cudnn.bencmark = True
 
 import warnings
-warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore")
 import os,sys
 import cv2
 import random,datetime
