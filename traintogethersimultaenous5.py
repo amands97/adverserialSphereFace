@@ -94,41 +94,41 @@ def train(epoch,args):
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
 
-        if batch_idx % 2 == 0:
-            mask =gumbel_softmax(maskNet(inputs))
-            mask = upsampler(mask)
-            maskedFeatures = torch.mul(mask, inputs)
-            outputs = newNet(maskedFeatures)
-            outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-            _, predicted = torch.max(outputs1.data, 1)
-            total += targets.size(0)
-            if use_cuda:
-                correct += predicted.eq(targets.data).cpu().sum()
-            else:
-                correct += predicted.eq(targets.data).sum()
-            lossAdv = criterion(outputs, targets)
-            # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
-            if use_cuda:
-                lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
-            else:
-                lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
-            lossSize = 0
-            if lossSize1 > 0.25:
-                lossSize = (100*(lossSize1 - 0.25)).pow(2)
-            elif lossSize1 < 0.10:
-                lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
-            # print(lossSize1) 
-            writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
-            # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
-            writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-            loss = (-lossAdv)  + lossSize
-            writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
-            lossd = loss.data
+        # if batch_idx % 2 == 0:
+        mask =gumbel_softmax(maskNet(inputs))
+        mask = upsampler(mask)
+        maskedFeatures = torch.mul(mask, inputs)
+        outputs = newNet(maskedFeatures)
+        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        _, predicted = torch.max(outputs1.data, 1)
+        total += targets.size(0)
+        if use_cuda:
+            correct += predicted.eq(targets.data).cpu().sum()
+        else:
+            correct += predicted.eq(targets.data).sum()
+        lossAdv = criterion(outputs, targets)
+        # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
+        if use_cuda:
+            lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
+        else:
+            lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
+        lossSize = 0
+        if lossSize1 > 0.25:
+            lossSize = (100*(lossSize1 - 0.25)).pow(2)
+        elif lossSize1 < 0.10:
+            lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
+        # print(lossSize1) 
+        writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
+        # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
+        writer.add_scalar('Loss/adv-size', lossSize, n_iter)
+        loss = (-lossAdv)  + lossSize
+        writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
+        lossd = loss.data
 
-            # a = list(maskNet.parameters())[0].clone()
-            # a2 = list(newNet.parameters())[0].clone()
-            loss.backward()
-            optimizerMask.step()
+        # a = list(maskNet.parameters())[0].clone()
+        # a2 = list(newNet.parameters())[0].clone()
+        loss.backward()
+        optimizerMask.step()
 
             # b = list(maskNet.parameters())[0].clone()
             # b2 = list(newNet.parameters())[0].clone()
@@ -138,49 +138,49 @@ def train(epoch,args):
             # print(torch.equal(a2, b2))
             # import sys
             # sys.exit()
-        else:
+        # else:
             # set this optimizer mask grad to be zero again
-            # optimizerMask.zero_grad()
-            # maskNet.zero_grad()
-            # newNet.zero_grad()
+            optimizerMask.zero_grad()
+            maskNet.zero_grad()
+            newNet.zero_grad()
             # # featureNet.zero_grad()
             # # fcNet.zero_grad()
-            # optimizerFC.zero_grad()
+            optimizerFC.zero_grad()
             # 100 * (correct2)/(total2 * 1.0) > 20 and 
-            if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
-                mask = gumbel_softmax(maskNet(inputs))
-                mask = upsampler(mask)
-                maskedFeatures = torch.mul(mask.detach(), inputs)
+        if 100 * (correct2)/(total2 * 1.0) > 10 and np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
+            mask = gumbel_softmax(maskNet(inputs))
+            mask = upsampler(mask)
+            maskedFeatures = torch.mul(mask.detach(), inputs)
 
-            else:
-                maskedFeatures = inputs
+        else:
+            maskedFeatures = inputs
 
-            # mask = gumbel_softmax(maskNet(inputs))
-            # mask = upsampler(mask)
-            # maskedFeatures = torch.mul(mask.detach(), inputs).detach()
-            outputs = newNet(maskedFeatures)
+        # mask = gumbel_softmax(maskNet(inputs))
+        # mask = upsampler(mask)
+        # maskedFeatures = torch.mul(mask.detach(), inputs).detach()
+        outputs = newNet(maskedFeatures)
 
 
-            lossC = criterion2(outputs, targets)
-            lossClassification = lossC.data
-            # a = list(maskNet.parameters())[0].clone()
-            # a2 = list(newNet.parameters())[0].clone()
-            lossC.backward()
-            optimizerFC.step()
+        lossC = criterion2(outputs, targets)
+        lossClassification = lossC.data
+        # a = list(maskNet.parameters())[0].clone()
+        # a2 = list(newNet.parameters())[0].clone()
+        lossC.backward()
+        optimizerFC.step()
 
-            # b = list(maskNet.parameters())[0].clone()
-            # b2 = list(newNet.parameters())[0].clone()
-            # print("---")
-            # print(torch.equal(a,b))
-            # print(torch.equal(a2, b2))
-            classification_loss += lossClassification
-            # train_loss += loss.data
+        # b = list(maskNet.parameters())[0].clone()
+        # b2 = list(newNet.parameters())[0].clone()
+        # print("---")
+        # print(torch.equal(a,b))
+        # print(torch.equal(a2, b2))
+        classification_loss += lossClassification
+        # train_loss += loss.data
 
-            writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
-            # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
-            # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
-            writer.add_scalar('Accuracy/correct', correct, n_iter)
-            
+        writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
+        # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
+        # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
+        writer.add_scalar('Accuracy/correct', correct, n_iter)
+        
             # import sys
             # sys.exit()
         batch_idx += 1
