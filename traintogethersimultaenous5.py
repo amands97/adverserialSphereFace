@@ -124,8 +124,19 @@ def train(epoch,args):
             loss = (-lossAdv)  + lossSize
             writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
             lossd = loss.data
+
+            a = list(maskNet.parameters())[0].clone()
+            a2 = list(newNet.parameters())[0].clone()
             loss.backward()
             optimizerMask.step()
+
+            b = list(maskNet.parameters())[0].clone()
+            b2 = list(newNet.parameters())[0].clone()
+
+            print(torch.equal(a,b))
+            print(torch.equal(a2, b2))
+            import sys
+            sys.exit()
         else:
             # set this optimizer mask grad to be zero again
             # optimizerMask.zero_grad()
