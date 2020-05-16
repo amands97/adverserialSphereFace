@@ -167,12 +167,12 @@ def train(epoch,args):
             a2 = list(newNet.parameters())[0].clone()
             lossC.backward()
             optimizerFC.step()
+
+            b = list(maskNet.parameters())[0].clone()
+            b2 = list(newNet.parameters())[0].clone()
             print("---")
             print(torch.equal(a,b))
             print(torch.equal(a2, b2))
-            b = list(maskNet.parameters())[0].clone()
-            b2 = list(newNet.parameters())[0].clone()
-
             classification_loss += lossClassification
             # train_loss += loss.data
 
