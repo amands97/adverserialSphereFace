@@ -143,7 +143,7 @@ def train(epoch,args):
         # else:
             # correct += predicted.eq(targets.data).sum()
         targets = torch.from_numpy(label[:,0]).long()
-
+        if use_cuda: targets = targets.cuda()
         lossAdv = criterion(outputs, targets)
         # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
