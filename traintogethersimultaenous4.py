@@ -137,8 +137,8 @@ def train(epoch,args):
 
             if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
                 mask = gumbel_softmax(maskNet(inputs))
-                mask = upsampler(mask)
-                maskedFeatures = torch.mul(mask.detach(), inputs)
+                mask = upsampler(mask).detach()
+                maskedFeatures = torch.mul(mask, inputs)
 
             else:
                 maskedFeatures = inputs
