@@ -84,7 +84,7 @@ def train(epoch,args):
                 correct2 += predicted.eq(targets.data).cpu().sum()
             else:
                 correct2 += predicted.eq(targets.data).sum()
-            writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
+            writer.add_scalar("Accuracy/true",  (100.0 *correct2)/(total2 * 1.0), n_iter)
             newNet.train()
         # if epoch % 2 == 1:
         maskNet.zero_grad()
@@ -107,9 +107,10 @@ def train(epoch,args):
             mask = gumbel_softmax(maskNet(inputs))
             mask = upsampler(mask)
             maskedFeatures = torch.mul(mask.detach(), inputs)
-
+            print("came here")
         else:
             maskedFeatures = inputs
+            print("not")
 
         # mask = gumbel_softmax(maskNet(inputs))
         # mask = upsampler(mask)
