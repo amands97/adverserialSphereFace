@@ -150,6 +150,11 @@ def train(epoch,args):
         # # fcNet.zero_grad()
         optimizerFC.zero_grad()
             # 100 * (correct2)/(total2 * 1.0) > 20 and 
+
+        inputs = torch.from_numpy(img).float()
+        targets = torch.from_numpy(label[:,0]).long()
+        if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
+        
         if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
             print(batch_idx, "mask way")
             mask = gumbel_softmax(maskNet(inputs))
