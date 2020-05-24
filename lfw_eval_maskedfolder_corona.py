@@ -78,25 +78,45 @@ predicts=[]
 
 
 featureNet = getattr(net_sphere,args.net)()
-if args.model_folder == -1:
-    featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + args.epoch_num + '.pth'))
+fcNet = getattr(net_sphere, "fclayers")()
+
+
+if args.epoch_num == "-1":
+    featureNet = getattr(net_sphere,args.net)()
+
+    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+
+    # maskNet = getattr(adversary, "MaskMan")(512)
+    # maskNet = getattr(adversary, "MaskMan")()
+
+    fcNet = getattr(net_sphere, "fclayers")()
+    pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+    fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+    fcNet.load_state_dict(fcDict)
+    fcNet.feature = True
+
+
 else:
-    featureNet.load_state_dict(torch.load('saved_models_ce_masked{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
+
+
+    if args.model_folder == -1:
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + args.epoch_num + '.pth'))
+    else:
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
+
+    # we dont need maskNet here right?
+    # maskNet = getattr(adversary, "MaskMan")(512)
+    # maskNet.load_state_dict(torch.load("saved_models/maskNet_19.pth"))
+    # maskNet.cuda()
+    # maskNet.eval()
+
+    if args.model_folder == -1:
+        fcNet.load_state_dict(torch.load("saved_models_ce_masked/fcNet_"+ args.epoch_num + ".pth"))
+    else:
+        fcNet.load_state_dict(torch.load("saved_models_ce_masked{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
 
 featureNet.cuda()
 featureNet.eval()
-
-# we dont need maskNet here right?
-# maskNet = getattr(adversary, "MaskMan")(512)
-# maskNet.load_state_dict(torch.load("saved_models/maskNet_19.pth"))
-# maskNet.cuda()
-# maskNet.eval()
-
-fcNet = getattr(net_sphere, "fclayers")()
-if args.model_folder == -1:
-    fcNet.load_state_dict(torch.load("saved_models_ce_masked/fcNet_"+ args.epoch_num + ".pth"))
-else:
-    fcNet.load_state_dict(torch.load("saved_models_ce_masked{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
 
 fcNet.cuda()
 fcNet.feature = True
