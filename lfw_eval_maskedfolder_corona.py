@@ -119,6 +119,7 @@ for line in landmark_lines:
 
 with open('data/pairs.txt') as f:
     pairs_lines = f.readlines()[1:]
+new_pairs_lines = []
 
 for i in range(len(pairs_lines)):
     # if (i%100 == 0):
@@ -131,8 +132,11 @@ for i in range(len(pairs_lines)):
         name2 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[2]))
         try:
             zfile.read(name1)
+            new_pairs_lines.append(pairs_lines[i])
+
         except:
-            pairs_lines.pop(i)
+            # pairs_lines.pop(i)
+            pass
     if 4==len(p):
         sameflag = 0
         name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
@@ -140,9 +144,11 @@ for i in range(len(pairs_lines)):
         try:
             zfile.read(name1)
             zfile.read(name2)
+            new_pairs_lines.append(pairs_lines[i])
         except:
-            pairs_lines.pop(i)
-
+            # pairs_lines.pop(i)
+            pass
+pairs_lines = new_pairs_lines
 for i in range(len(pairs_lines)):
     if (i%100 == 0):
         print("done:", i)
