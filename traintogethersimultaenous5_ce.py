@@ -109,7 +109,7 @@ def train(epoch,args):
             correct += predicted.eq(targets.data).cpu().sum()
         else:
             correct += predicted.eq(targets.data).sum()
-        lossAdv = criterion2(outputs, targets)
+        lossAdv = criterion2(outputs[0], targets)
         # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
@@ -151,9 +151,9 @@ def train(epoch,args):
         optimizerFC.zero_grad()
             # 100 * (correct2)/(total2 * 1.0) > 20 and 
 
-        inputs = torch.from_numpy(img).float()
-        targets = torch.from_numpy(label[:,0]).long()
-        if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
+        # inputs = torch.from_numpy(img).float()
+        # targets = torch.from_numpy(label[:,0]).long()
+        # if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         
         if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
             print(batch_idx, "mask way")
