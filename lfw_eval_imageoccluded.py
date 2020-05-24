@@ -99,9 +99,9 @@ predicts=[]
 
 featureNet = getattr(net_sphere,args.net)()
 if args.model_folder == -1:
-    featureNet.load_state_dict(torch.load('saved_models_ce_mid/featureNet_' + args.epoch_num + '.pth'))
+    featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + args.epoch_num + '.pth'))
 else:
-    featureNet.load_state_dict(torch.load('saved_models_ce_mid{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
+    featureNet.load_state_dict(torch.load('saved_models_ce_masked{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
 
 if args.gpu == 1:
     featureNet.cuda()
@@ -115,9 +115,9 @@ featureNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
 if args.model_folder == -1:
-    fcNet.load_state_dict(torch.load("saved_models_ce_mid/fcNet_"+ args.epoch_num + ".pth"))
+    fcNet.load_state_dict(torch.load("saved_models_ce_masked/fcNet_"+ args.epoch_num + ".pth"))
 else:
-    fcNet.load_state_dict(torch.load("saved_models_ce_mid{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
+    fcNet.load_state_dict(torch.load("saved_models_ce_masked{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
 if args.gpu == 1:
     fcNet.cuda()
 fcNet.feature = True
