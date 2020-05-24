@@ -132,6 +132,8 @@ for i in range(len(pairs_lines)):
         name2 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[2]))
         try:
             zfile.read(name1)
+            zfile.read(name2)
+
             new_pairs_lines.append(pairs_lines[i])
 
         except:
