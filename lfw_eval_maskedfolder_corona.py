@@ -138,7 +138,8 @@ for i in range(6000):
     # img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
     img1 = cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1)
     img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
-
+    img1 = cv2.resize(img1, (96, 112))
+    img2 = cv2.resize(img2, (96, 112))
 
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     for i in range(len(imglist)):
