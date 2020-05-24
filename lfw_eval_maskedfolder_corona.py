@@ -148,6 +148,7 @@ for i in range(len(pairs_lines)):
         except:
             # pairs_lines.pop(i)
             pass
+print(len(new_pairs_lines))
 pairs_lines = new_pairs_lines
 for i in range(len(pairs_lines)):
     if (i%100 == 0):
