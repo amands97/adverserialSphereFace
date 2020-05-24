@@ -216,6 +216,14 @@ else:
         featureNet.load_state_dict(torch.load('saved_models_ce_masked'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
+    if args.startfolder == -1:
+        # featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
+        maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
+
+    else:
+        # featureNet.load_state_dict(torch.load('saved_models_ce_masked'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
+        maskNet.load_state_dict(torch.load('saved_models_ce_maskedd'+ str(args.startfolder) + '/maskNet_' + str(args.checkpoint) + '.pth'))
+
     maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
