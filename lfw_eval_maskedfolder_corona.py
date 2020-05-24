@@ -120,7 +120,30 @@ for line in landmark_lines:
 with open('data/pairs.txt') as f:
     pairs_lines = f.readlines()[1:]
 
-for i in range(6000):
+for i in range(len(pairs_lines)):
+    # if (i%100 == 0):
+        # print("done:", i)
+    p = pairs_lines[i].replace('\n','').split('\t')
+
+    if 3==len(p):
+        sameflag = 1
+        name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
+        name2 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[2]))
+        try:
+            zfile.read(name1)
+        except:
+            pairs_lines.pop(i)
+    if 4==len(p):
+        sameflag = 0
+        name1 = p[0]+'/'+p[0]+'_'+'{:04}.jpg'.format(int(p[1]))
+        name2 = p[2]+'/'+p[2]+'_'+'{:04}.jpg'.format(int(p[3]))
+        try:
+            zfile.read(name1)
+            zfile.read(name2)
+        except:
+            pairs_lines.pop(i)
+
+for i in range(len(pairs_lines)):
     if (i%100 == 0):
         print("done:", i)
     p = pairs_lines[i].replace('\n','').split('\t')
@@ -161,7 +184,7 @@ for i in range(6000):
 
 accuracy = []
 thd = []
-folds = KFold(n=6000, n_folds=10, shuffle=False)
+folds = KFold(n=len(pairs_lines), n_folds=10, shuffle=False)
 thresholds = np.arange(-1.0, 1.0, 0.005)
 predicts = np.array(map(lambda line:line.strip('\n').split(), predicts))
 for idx, (train, test) in enumerate(folds):
