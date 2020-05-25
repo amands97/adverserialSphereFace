@@ -120,7 +120,7 @@ def train(epoch,args):
         # print(lossSize1) 
         writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
         writer.add_scalar('Loss/adv-compactness', lossCompact, n_iter)
-        writer.add_scalar('Loss/adv-size', lossSize, n_iter)
+        # writer.add_scalar('Loss/adv-size', lossSize, n_iter)
         loss = (-lossAdv)  + lossCompact/100000
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
