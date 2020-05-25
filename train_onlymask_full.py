@@ -65,6 +65,11 @@ def train(epoch,args):
     while True:
         if batch_idx % 50 == 0 and batch_idx > 0:
             print(batch_idx)
+            if batch_idx %1000 == 0:
+                save_model(featureNet, 'saved_models_ce_masked{}/featureNet_{}.pth'.format(args.savefolder, epoch))
+                save_model(maskNet, 'saved_models_ce_masked{}/maskNet_{}{}.pth'.format(args.savefolder,epoch, batch_idx))
+                save_model(fcNet, 'saved_models_ce_masked{}/fcNet_{}.pth'.format(args.savefolder,epoch))
+
         if batch_idx == 1500:
             break
         n_iter += 1
@@ -101,7 +106,7 @@ def train(epoch,args):
             correct += predicted.eq(targets.data).cpu().sum()
         else:
             correct += predicted.eq(targets.data).sum()
-        lossAdv = criterion(outputs, targets.detach())
+        lossAdv = criterion(outputs, targets)
         lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
