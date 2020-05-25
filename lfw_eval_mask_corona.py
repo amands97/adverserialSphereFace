@@ -17,7 +17,7 @@ from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
 from gumbel import gumbel_softmax
-import adversary_full as adversary
+import adversary
 def alignment(src_img,src_pts):
     ref_pts = [ [30.2946, 51.6963],[65.5318, 51.5014],
         [48.0252, 71.7366],[33.5493, 92.3655],[62.7299, 92.2041] ]
@@ -77,18 +77,18 @@ use_cuda = torch.cuda.is_available()
 
 
 featureNet = getattr(net_sphere,args.net)()
-# featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
+featureNet.load_state_dict(torch.load('saved_models_ce/featureNet_' + args.epoch_num + '.pth'))
 # featureNet.cuda()
 featureNet.eval()
 
 # we dont need maskNet here right?
 maskNet = getattr(adversary, "MaskMan")()
-maskNet.load_state_dict(torch.load("saved_models_ce_masked19/maskNet_" + args.epoch_num +".pth"))
+maskNet.load_state_dict(torch.load("saved_models_ce/maskNet_" + args.epoch_num +".pth"))
 # maskNet.cuda()
 maskNet.eval()
 
 fcNet = getattr(net_sphere, "fclayers")()
-# fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
+fcNet.load_state_dict(torch.load("saved_models_ce/fcNet_"+ args.epoch_num + ".pth"))
 # fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
@@ -134,8 +134,10 @@ for i in range(6000):
         name2 = p[2]+'/'+p[2]+'_'+'{:04}.jpg'.format(int(p[3]))
     print(name1)
     print(name2)
-    img1 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1),landmark[name1])
-    img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
+    img1 = cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1)
+    img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
+    img1 = cv2.resize(img1, (96, 112))
+    img2 = cv2.resize(img2, (96, 112))
     print("shadnoasjdnajosd", img1.shape)
     # print(img1)
     # from matplotlib import pyplot as plt
@@ -159,15 +161,14 @@ for i in range(6000):
     output = featureNet(img)
     # print(output)
     mask = maskNet(img)
-    print(mask)
     mask = gumbel_softmax(mask)
-    # mask = nn.Upsample(scale_factor = 16, mode = 'nearest')(mask)
+    mask = nn.Upsample(scale_factor = 16, mode = 'nearest')(mask)
     print(mask.shape)
-    # print(img[0,0])
+    print(img[0,0])
     outimg = img.numpy() * mask.detach().numpy()
     # outimg = outimg[:, 0, :, :].unsqueeze(1)
-    # print(outimg.shape)
-    # print(outimg[0, 0])
+    print(outimg.shape)
+    print(outimg[0, 0])
     # outimg[:, :].permute(2, 1, 0)
     # print(outimg.shape)
     # print(outimg.permute())
