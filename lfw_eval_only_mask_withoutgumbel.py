@@ -169,7 +169,7 @@ for i in range(6000):
     # print(output)
     mask = maskNet(img)
     # print(mask)
-    # mask = gumbel_softmax(mask, tau = 0.00000000005)
+    # mask = gumbel_softmax(mask, tau = 0.001)
     # mask = nn.Upsample(scale_factor = 16, mode = 'nearest')(mask)
     # print(mask)
     # print(mask.shape)
