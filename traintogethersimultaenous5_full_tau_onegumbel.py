@@ -164,7 +164,7 @@ def train(epoch,args):
             # mask = upsampler(mask)
 
             maskedFeatures = torch.mul(mask.detach(), inputs)
-            maskedFeatures[maskedFeatures == 0] = [random.uniform(-1,1 ) for _ in range(len(maskedFeatures[maskedFeatures == 0]))]
+            maskedFeatures[maskedFeatures == 0] = torch.Tensor([random.uniform(-1,1 ) for _ in range(len(maskedFeatures[maskedFeatures == 0]))])
 
         else:
             maskedFeatures = inputs
