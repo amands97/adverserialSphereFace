@@ -130,6 +130,8 @@ print(len(names_list))
 features_dict = {}
 features = []
 for idx, file_name in enumerate(names_list):
+    if idx % 500 == 0:
+        print(idx)
     img1 = alignment(cv2.imdecode(np.frombuffer(zfile.read(file_name),np.uint8),1),landmark[file_name])
     img1 = img1.transpose(2, 0, 1).reshape((1,3,112,96))
     img1 = (img1-127.5)/128.0
