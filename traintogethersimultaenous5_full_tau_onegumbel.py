@@ -7,7 +7,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 torch.backends.cudnn.bencmark = True
-
+import random
 import warnings
 warnings.filterwarnings("ignore")
 import os,sys
@@ -162,7 +162,9 @@ def train(epoch,args):
             mask = maskNet(inputs)
             mask = (mask>0).type(torch.uint8)
             # mask = upsampler(mask)
+
             maskedFeatures = torch.mul(mask.detach(), inputs)
+            maskedFeatures[maskedFeatures == 0] = [random.uniform(-1,1 ) for _ in range(len(maskedFeatures[maskedFeatures == 0]))]
 
         else:
             maskedFeatures = inputs

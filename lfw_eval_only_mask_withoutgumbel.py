@@ -174,10 +174,24 @@ for i in range(6000):
     # print(mask)
     # print(mask.shape)
     mask = ((mask > 0).type(torch.uint8))
+    # mask = 2 * mask - 1
+    # print(mask == 0)
+    # a_set = torch.unique((torch.Tensor([i for i in range(256)])))
+    outimg = img.numpy() * mask.detach().numpy()
+    import random
+    # print((outimg == 0).shape)
+    outimg[outimg == 0] = [random.uniform(-1,1 ) for _ in range(len(outimg[outimg == 0]))]
+    # print(outimg)
+    # print(img[:, 0, :][mask == 0])
+    # img[img < 0] 
+    # print(img[img == 0].size())
+    # print(img[img == -1].size())
+    # import sys
+    # sys.exit()
     # import sys
     # sys.exit()
     # print(img[0,0])
-    outimg = img.numpy() * mask.detach().numpy()
+    # outimg = img.numpy() * mask.detach().numpy()
     # outimg = outimg[:, 0, :, :].unsqueeze(1)
     # print(outimg.shape)
     # print(outimg[0, 0])
@@ -217,9 +231,9 @@ for i in range(6000):
     # predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
     import time
     time.sleep(5)
-    if i == 10:
-        import sys
-        sys.exit()
+    # if i == 0:
+    import sys
+    sys.exit()
 
 accuracy = []
 thd = []
