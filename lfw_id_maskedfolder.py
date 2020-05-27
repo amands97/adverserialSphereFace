@@ -144,7 +144,7 @@ for idx, file_name in enumerate(names_list):
     features_dict[file_name] = output.data[0]
     # print(output.data[0])
     features.append(output.data[0].numpy())
-    # if idx == 60:
+    # if idx == 10:
     #     break
     # break
 print("calculating cosine")
@@ -174,12 +174,18 @@ top1accuracy = 0
 k = 1
 list_ = []
 print("calculating top1 accuracy")
+name_start = ""
 for i in range(len(cosine)):
+    if names_list[i].split("/")[0] != name_start:
+        name_start = names_list[i].split("/")[0]
+    else:
+        continue
     ind = np.argpartition(cosine[i], -(k+1))[-(k+1):]
     # print(ind)
     found = 0
     for idx in ind:
         if idx == i:
+            # print("asdas")
             continue
         # print(names_list[i].split("/"), names_list[idx].split("/"))
         if names_list[i].split("/")[0] == names_list[idx].split("/")[0]:
