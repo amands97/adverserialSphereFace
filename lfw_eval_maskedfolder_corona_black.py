@@ -217,6 +217,8 @@ for i in range(len(pairs_lines)):
     mask1 = np.array(mask1)
     mask2 = np.array(mask2)
     print(mask1.shape)
+    mask1 = 1 - mask1
+    mask2 = 1 - mask2
     img1 = cv2.resize(img1, (96, 112))
     img2 = cv2.resize(img2, (96, 112))
     mask1 = mask1[..., np.newaxis]
