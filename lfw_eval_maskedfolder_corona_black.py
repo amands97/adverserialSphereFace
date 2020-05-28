@@ -228,6 +228,27 @@ for i in range(len(pairs_lines)):
     # print((msk * img).shape)
     # img = msk * img
     img = img * msk
+    for i in range(2):
+        # print(mask[i, 0])
+        # print(outimg[i])
+        # image = cv2.resize(outimg[i].detach().unsqueeze(0).numpy(), (96, 112), interpolation = cv2.INTER_AREA)
+        print(outimg[i].shape)
+        print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
+        print("asdasd")
+        image = outimg[i].transpose(1,2,0)
+        # image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
+        image = cv2.resize(image, (96, 112))
+        image = image * 128.0 + 127.5
+        # image = image.transpose((2, 0, 1))
+        print(image.shape)
+        # print(outimg[])
+        cv2.imwrite("face" + str(i)+  ".jpg", image)
+
+        # image.save("face" + str(i)+  ".jpg")
+
+        # image = transforms.ToPILImage(mode='L')(mask[i])
+        # image = image.resize((96, 112))
+        # image.save("mask" + str(i)+  ".jpg")
 
     # import sys
     # sys.exit()
@@ -239,7 +260,8 @@ for i in range(len(pairs_lines)):
     f1,f2 = f[0],f[1]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
     predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
-
+    import sys
+    sys.exit()
 
 accuracy = []
 thd = []
