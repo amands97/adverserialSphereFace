@@ -198,7 +198,7 @@ for i in range(len(pairs_lines)):
     img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
     mask1 = np.frombuffer(zfile.read(maskname1), np.uint8)
     mask2 = np.frombuffer(zfile.read(maskname2), np.uint8)
-    print(mask1)
+    print(mask1.shape)
     mask1 = cv2.resize(mask1, (96, 112))
     print(mask1)
     mask2 = cv2.resize(mask2, (96, 112))
