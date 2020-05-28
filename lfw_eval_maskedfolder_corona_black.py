@@ -279,8 +279,8 @@ for i in range(len(pairs_lines)):
     f1,f2 = f[0],f[1]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
     predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
-    import sys
-    sys.exit()
+    # import sys
+    # sys.exit()
 
 accuracy = []
 thd = []
