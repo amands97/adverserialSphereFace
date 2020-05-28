@@ -202,7 +202,7 @@ for i in range(len(pairs_lines)):
     mask2 = cv2.resize(mask2, (96, 112))
     img1 = cv2.resize(img1, (96, 112))
     img2 = cv2.resize(img2, (96, 112))
-
+    print(img1.shape. mask1.shape)
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     maskList = [mask1, cv2.flip(mask1, 1), mask2, cv2.flip(mask2, 1)]
     for i in range(len(imglist)):
