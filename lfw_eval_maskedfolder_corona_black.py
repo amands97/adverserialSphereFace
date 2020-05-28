@@ -201,6 +201,9 @@ for i in range(len(pairs_lines)):
     mask1 = np.load("new_masked/" + maskname1)
     mask2 = np.load("new_masked/" + maskname2)
 
+    mask1 = cv2.fomarray(mask1)
+    mask2 = cv2.fomarray(mask2)
+
     print(mask1.shape)
     mask1 = cv2.resize(mask1, (96, 112))
     print(mask1)
