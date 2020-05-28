@@ -224,11 +224,11 @@ for i in range(len(pairs_lines)):
     # mask = 
     # img = i
 
-    print(img.shape, msk.shape)
-    print((msk * img).shape)
-    
-    import sys
-    sys.exit()
+    # print(img.shape, msk.shape)
+    # print((msk * img).shape)
+    img = msk * img
+    # import sys
+    # sys.exit()
     output = featureNet(img)
     # print(output)
     output = fcNet(output)
