@@ -196,12 +196,14 @@ for i in range(len(pairs_lines)):
     # img2 = alignment(cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1),landmark[name2])
     img1 = cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1)
     img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
-    mask1 = np.frombuffer(zfile.read(maskname1), np.uint8)[..., np.newaxis]
-    mask2 = np.frombuffer(zfile.read(maskname2), np.uint8)[..., np.newaxis]
+    mask1 = np.frombuffer(zfile.read(maskname1), np.uint8)
+    mask2 = np.frombuffer(zfile.read(maskname2), np.uint8)
     mask1 = cv2.resize(mask1, (96, 112))
     mask2 = cv2.resize(mask2, (96, 112))
     img1 = cv2.resize(img1, (96, 112))
     img2 = cv2.resize(img2, (96, 112))
+    mask1 = mask1[..., np.newaxis]
+    mask2 = mask2[..., np.newaxis]
     print(img1.shape, mask1.shape)
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     maskList = [mask1, cv2.flip(mask1, 1), mask2, cv2.flip(mask2, 1)]
