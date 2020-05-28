@@ -227,7 +227,7 @@ for i in range(len(pairs_lines)):
     # print(img.shape, msk.shape)
     # print((msk * img).shape)
     # img = msk * img
-    img = (img * msk).numpy()
+    img = (img * msk).cpu().numpy()
     for i in range(2):
         # print(mask[i, 0])
         # print(outimg[i])
@@ -250,8 +250,8 @@ for i in range(len(pairs_lines)):
         # image = image.resize((96, 112))
         # image.save("mask" + str(i)+  ".jpg")
 
-    # import sys
-    # sys.exit()
+    import sys
+    sys.exit()
     output = featureNet(img)
     # print(output)
     output = fcNet(output)
