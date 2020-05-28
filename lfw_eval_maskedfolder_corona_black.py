@@ -226,6 +226,7 @@ for i in range(len(pairs_lines)):
 
     print(img.shape, msk.shape)
     print((msk * img).shape)
+    
     import sys
     sys.exit()
     output = featureNet(img)
