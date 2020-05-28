@@ -232,10 +232,10 @@ for i in range(len(pairs_lines)):
         # print(mask[i, 0])
         # print(outimg[i])
         # image = cv2.resize(outimg[i].detach().unsqueeze(0).numpy(), (96, 112), interpolation = cv2.INTER_AREA)
-        print(outimg[i].shape)
-        print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
+        print(img[i].shape)
+        # print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
         print("asdasd")
-        image = outimg[i].transpose(1,2,0)
+        image = img[i].transpose(1,2,0)
         # image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
         image = cv2.resize(image, (96, 112))
         image = image * 128.0 + 127.5
