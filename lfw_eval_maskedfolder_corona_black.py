@@ -208,6 +208,7 @@ for i in range(len(pairs_lines)):
     imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     maskList = [mask1, cv2.flip(mask1, 1), mask2, cv2.flip(mask2, 1)]
     for i in range(len(imglist)):
+        print(i)
         imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1,3,112,96))
         maskList[i] = maskList[i].transpose(2, 0, 1).reshape((1, 1, 112, 96))
         imglist[i] = (imglist[i]-127.5)/128.0
