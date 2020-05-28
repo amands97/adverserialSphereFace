@@ -200,9 +200,12 @@ for i in range(len(pairs_lines)):
     # mask2 = np.frombuffer(zfile.read(maskname2), np.uint8)
     mask1 = np.load("new_masked/" + maskname1)
     mask2 = np.load("new_masked/" + maskname2)
+    from PIL import Image
 
-    mask1 = cv2.fromarray(mask1)
-    mask2 = cv2.fromarray(mask2)
+    mask1 = Image.fromarray(mask1.astype(np.uint8))
+    # mask1 = cv2.fromarray(mask1)
+    # mask2 = cv2.fromarray(mask2)
+    mask2 = Image.fromarray(mask2.astype(np.uint8))
 
     print(mask1.shape)
     mask1 = cv2.resize(mask1, (96, 112))
