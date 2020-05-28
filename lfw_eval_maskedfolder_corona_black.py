@@ -205,8 +205,11 @@ for i in range(len(pairs_lines)):
     mask1 = mask1[..., np.newaxis]
     mask2 = mask2[..., np.newaxis]
     print(img1.shape, mask1.shape)
-    imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
-    maskList = [mask1, cv2.flip(mask1, 1), mask2, cv2.flip(mask2, 1)]
+    # imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
+    # maskList = [mask1, cv2.flip(mask1, 1), mask2, cv2.flip(mask2, 1)]
+    imglist = [img1, img2]
+    maskList = [mask1, mask2]
+
     for i in range(len(imglist)):
         print(i)
         imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1,3,112,96))
@@ -229,7 +232,7 @@ for i in range(len(pairs_lines)):
     output = fcNet(output)
     # print(output)
     f = output.data
-    f1,f2 = f[0],f[2]
+    f1,f2 = f[0],f[1]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
     predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
 
