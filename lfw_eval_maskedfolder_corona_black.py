@@ -204,14 +204,14 @@ for i in range(len(pairs_lines)):
     img2 = cv2.resize(img2, (96, 112))
     mask1 = mask1[..., np.newaxis]
     mask2 = mask2[..., np.newaxis]
-    print(img1.shape, mask1.shape)
+    # print(img1.shape, mask1.shape)
     # imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
     # maskList = [mask1, cv2.flip(mask1, 1), mask2, cv2.flip(mask2, 1)]
     imglist = [img1, img2]
     maskList = [mask1, mask2]
 
     for i in range(len(imglist)):
-        print(i)
+        # print(i)
         imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1,3,112,96))
         maskList[i] = maskList[i].transpose(2, 0, 1).reshape((1, 1, 112, 96))
         imglist[i] = (imglist[i]-127.5)/128.0
