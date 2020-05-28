@@ -9,12 +9,12 @@ import torch.optim as optim
 import torch.nn.functional as F
 from torch.autograd import Variable
 torch.backends.cudnn.bencmark = True
-
+import numpy as np
 import os,sys,cv2,random,datetime
 import argparse
 import numpy as np
 import zipfile
-
+np.set_printoptions(threshold=sys.maxsize)
 from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
@@ -198,7 +198,9 @@ for i in range(len(pairs_lines)):
     img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
     mask1 = np.frombuffer(zfile.read(maskname1), np.uint8)
     mask2 = np.frombuffer(zfile.read(maskname2), np.uint8)
+    print(mask1)
     mask1 = cv2.resize(mask1, (96, 112))
+    print(mask1)
     mask2 = cv2.resize(mask2, (96, 112))
     img1 = cv2.resize(img1, (96, 112))
     img2 = cv2.resize(img2, (96, 112))
