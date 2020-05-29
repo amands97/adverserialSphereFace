@@ -93,19 +93,22 @@ class ImageDataset(object):
                 for line in lines: self.flist.append(imageroot+line) # zippath:filename classname
             else:
                 with open(imagelistfile) as f: lines = f.readlines()
-                foldernames =[i.filename for i in self.zfile.filelist]
+                foldernames =set([i.filename for i in self.zfile.filelist])
                 # print(lines)
                 # print(foldernames)
                 names_ = [line.split(" ")[0] for line in lines]
-                idx = 0
+                # idx = 0
                 print("start")
-                for line in lines: 
-                    idx += 1
+                # lines = list(set(lines).intersection())
+                for idx, line in enumerate(lines): 
+                    # idx += 1
                     if (idx % 10000 == 1):
                         print(idx)
-                    if line.split(" ")[0] not in foldernames:
-                        # print(line)
+                    if names_[idx] not in foldernames:
                         continue
+                    # if line.split(" ")[0] not in foldernames:
+                    #     # print(line)
+                    #     continue
                     self.flist.append(imageroot+line) # root/filepath classname || zippath:filename classname
                 print("data list loaded")
         self.imagenum = len(self.flist)
