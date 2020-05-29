@@ -5,7 +5,8 @@ import csv
 zfile = zipfile.ZipFile("../masked_casia.zip")
 writeFile = open("masked_casia_landmark.txt", "w")
 idx = 0
-print(zfile.namelist())
+s = set(zfile.namelist())
+
 with open("casia_landmark.txt") as f:
     lines = f.readlines()
     # print(lines[0].split("\t"))
@@ -15,11 +16,15 @@ with open("casia_landmark.txt") as f:
             print(idx)
             break
         filename = line.split("\t")[0]
-        try:
-            zfile.open(filename)
-            # writeFile.write("")
+        if filename in s:
             print >>writeFile, line
         except:
-            print(filename)
-            # writeFile.write(filename + "")
+            print("not found", filename)
+        # try:
+        #     zfile.open(filename)
+        #     # writeFile.write("")
+        #     print >>writeFile, line
+        # except:
+        #     print(filename)
+        #     # writeFile.write(filename + "")
 writeFile.close()
