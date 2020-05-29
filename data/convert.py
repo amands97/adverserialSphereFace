@@ -17,7 +17,7 @@ with open("casia_landmark.txt") as f:
             break
         filename = line.split("\t")[0]
         if filename in s:
-            print >>writeFile, line
+            print (line, file = writeFile)
         else:
             print("not found", filename)
         # try:
