@@ -94,8 +94,11 @@ class ImageDataset(object):
             else:
                 with open(imagelistfile) as f: lines = f.readlines()
                 foldernames =[i.filename for i in self.zfile.filelist]
+                print(lines)
+                print(foldernames)
                 for line in lines: 
                     if line not in foldernames:
+                        print(line)
                         continue
                     self.flist.append(imageroot+line) # root/filepath classname || zippath:filename classname
 
