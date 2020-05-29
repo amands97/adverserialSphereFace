@@ -60,13 +60,14 @@ def train(epoch,args):
     print("here")
     global n_iter
     while True:
-        if batch_idx % 50 == 0 and batch_idx > 0:
+        if batch_idx % 50 == 0:
             print(batch_idx)
             # if batch_idx > 100:
             #     break
 
         n_iter += 1
         img,label = ds.get()
+        print("go img")
         if img is None: break
         inputs = torch.from_numpy(img).float()
         targets = torch.from_numpy(label[:,0]).long()
