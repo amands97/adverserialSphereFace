@@ -180,30 +180,30 @@ for i in range(6000):
         if args.gpu == 1:
             mask = mask.cuda()
         img[i] = ((img[i] * mask))
-    img = img.detach().cpu().numpy()
-    for i in range(4):
-        # print(mask[i, 0])
-        # print(outimg[i])
-        # image = cv2.resize(img[i].detach().unsqueeze(0).numpy(), (96, 112), interpolation = cv2.INTER_AREA)
-        print(img[i].shape)
-        # print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
-        print("asdasd")
-        image = img[i].transpose(1,2,0)
-        # image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (96, 112))
-        image = image * 128.0 + 127.5
-        # image = image.transpose((2, 0, 1))
-        print(image.shape)
-        # print(outimg[])
-        cv2.imwrite("face" + str(i)+  ".jpg", image)
+    # img = img.detach().cpu().numpy()
+    # for i in range(4):
+    #     # print(mask[i, 0])
+    #     # print(outimg[i])
+    #     # image = cv2.resize(img[i].detach().unsqueeze(0).numpy(), (96, 112), interpolation = cv2.INTER_AREA)
+    #     print(img[i].shape)
+    #     # print(cv2.cvtColor(outimg[i].transpose(1, 2, 0), cv2.COLOR_BGR2RGB).shape)
+    #     print("asdasd")
+    #     image = img[i].transpose(1,2,0)
+    #     # image = cv2.cvtColor(outimg[i].transpose(1,2,0), cv2.COLOR_BGR2RGB)
+    #     image = cv2.resize(image, (96, 112))
+    #     image = image * 128.0 + 127.5
+    #     # image = image.transpose((2, 0, 1))
+    #     print(image.shape)
+    #     # print(outimg[])
+    #     cv2.imwrite("face" + str(i)+  ".jpg", image)
 
-        # image.save("face" + str(i)+  ".jpg")
+    #     # image.save("face" + str(i)+  ".jpg")
 
-        # image = transforms.ToPILImage(mode='L')(mask[i])
-        # image = image.resize((96, 112))
-        # image.save("mask" + str(i)+  ".jpg")
-    import sys
-    sys.exit()
+    #     # image = transforms.ToPILImage(mode='L')(mask[i])
+    #     # image = image.resize((96, 112))
+    #     # image.save("mask" + str(i)+  ".jpg")
+    # import sys
+    # sys.exit()
 
     output = featureNet(img)
     # for i, out in enumerate(output):
