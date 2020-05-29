@@ -14,7 +14,7 @@ with open("casia_landmark.txt") as f:
         idx += 1
         if idx % 5000 == 0:
             print(idx)
-            break
+            # break
         filename = line.split("\t")[0]
         if filename in s:
             print (line, end = "",  file = writeFile)
