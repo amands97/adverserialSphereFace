@@ -57,7 +57,7 @@ def train(epoch,args):
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
-
+    print("here")
     global n_iter
     while True:
         if batch_idx % 50 == 0 and batch_idx > 0:
