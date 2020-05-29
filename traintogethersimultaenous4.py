@@ -94,7 +94,7 @@ def train(epoch,args):
         newNet.zero_grad()
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
-
+        print("not")
         if batch_idx % 2 == 2:
             mask =gumbel_softmax(maskNet(inputs))
             mask = upsampler(mask)
@@ -162,6 +162,7 @@ def train(epoch,args):
             # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
             writer.add_scalar('Accuracy/correct', correct, n_iter)
             
+        print("done 1")
 
         batch_idx += 1
     print('')
