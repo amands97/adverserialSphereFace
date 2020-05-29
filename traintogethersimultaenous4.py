@@ -68,6 +68,7 @@ def train(epoch,args):
         n_iter += 1
         img,label = ds.get()
         print("go img")
+        print(img)
         if img is None: break
         print("go1 img")
 
