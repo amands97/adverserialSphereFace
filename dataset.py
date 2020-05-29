@@ -96,7 +96,11 @@ class ImageDataset(object):
                 foldernames =[i.filename for i in self.zfile.filelist]
                 # print(lines)
                 # print(foldernames)
+                idx = 0
                 for line in lines: 
+                    idx += 1
+                    if (idx % 10000 == 0):
+                        print(idx)
                     if line.split(" ")[0] not in foldernames:
                         # print(line)
                         continue
