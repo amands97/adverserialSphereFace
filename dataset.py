@@ -95,13 +95,13 @@ class ImageDataset(object):
                 with open(imagelistfile) as f: lines = f.readlines()
                 foldernames =[i.filename for i in self.zfile.filelist]
                 # print(lines)
-                print(foldernames)
+                # print(foldernames)
                 for line in lines: 
-                    if line not in foldernames:
+                    if line.split(" ")[0] not in foldernames:
                         # print(line)
                         continue
                     self.flist.append(imageroot+line) # root/filepath classname || zippath:filename classname
-
+                print("data list loaded")
         self.imagenum = len(self.flist)
         if self.shuffle: random.shuffle(self.flist)
         for filepath in self.flist:
