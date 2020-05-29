@@ -18,7 +18,7 @@ with open("casia_landmark.txt") as f:
         filename = line.split("\t")[0]
         if filename in s:
             print >>writeFile, line
-        except:
+        else:
             print("not found", filename)
         # try:
         #     zfile.open(filename)
