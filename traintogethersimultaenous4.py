@@ -67,21 +67,21 @@ def train(epoch,args):
 
         n_iter += 1
         img,label = ds.get()
-        print("go img")
-        print(img)
+        # print("go img")
+        # print(img)
         if img is None: break
-        print("go1 img")
+        # print("go1 img")
 
         inputs = torch.from_numpy(img).float()
-        print("go2 img")
+        # print("go2 img")
         targets = torch.from_numpy(label[:,0]).long()
-        print("go3 img")
+        # print("go3 img")
         
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
-        print("go4 img")
+        # print("go4 img")
         
         # inputs, targets = Variable(inputs), Variable(targets)
-        print("reached here")
+        # print("reached here")
         if batch_idx % 25 == 0:
             newNet.eval()
                 
@@ -102,7 +102,7 @@ def train(epoch,args):
         newNet.zero_grad()
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
-        print("not")
+        # print("not")
         if batch_idx % 2 == 2:
             mask =gumbel_softmax(maskNet(inputs))
             mask = upsampler(mask)
@@ -170,7 +170,7 @@ def train(epoch,args):
             # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
             writer.add_scalar('Accuracy/correct', correct, n_iter)
             
-        print("done 1")
+        # print("done 1")
 
         batch_idx += 1
     print('')
