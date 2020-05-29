@@ -69,9 +69,16 @@ def train(epoch,args):
         img,label = ds.get()
         print("go img")
         if img is None: break
+        print("go1 img")
+
         inputs = torch.from_numpy(img).float()
+        print("go2 img")
         targets = torch.from_numpy(label[:,0]).long()
+        print("go3 img")
+        
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
+        print("go4 img")
+        
         # inputs, targets = Variable(inputs), Variable(targets)
         print("reached here")
         if batch_idx % 25 == 0:
