@@ -12,6 +12,7 @@ with open("casia_landmark.txt") as f:
         idx += 1
         if idx % 5000 == 0:
             print(idx)
+            break
         filename = line.split("\t")[0]
         try:
             zfile.open(filename)
