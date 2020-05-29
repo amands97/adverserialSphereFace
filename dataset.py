@@ -100,6 +100,8 @@ class ImageDataset(object):
                 # idx = 0
                 print("start")
                 # lines = list(set(lines).intersection())
+                print(foldernames)
+                print(names_)
                 for idx, line in enumerate(lines): 
                     # idx += 1
                     if (idx % 10000 == 1):
