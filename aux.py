@@ -58,7 +58,39 @@ def dataset_load(name,filename,pindex,cacheobj,zfile):
     label = np.zeros((1,1),np.float32)
     label[0,0] = classid
     return (img,label)
+def dataset_load_noalign(name,filename,pindex,cacheobj,zfile):
+    position = filename.rfind('.zip:')
+    
+    zipfilename = filename[0:position+4]
+    nameinzip = filename[position+5:]
+    split = nameinzip.split('\t')
+    nameinzip = split[0]
+    classid = int(split[1])
+    src_pts = []
+    for i in range(5):
+        src_pts.append([int(split[2*i+2]),int(split[2*i+3])])
 
+    data = np.frombuffer(zfile.read(nameinzip),np.uint8)
+    img = cv2.imdecode(data,1)
+    # img = alignment(img,src_pts)
+
+    if ':train' in name:
+        if random.random()>0.5: img = cv2.flip(img,1)
+        if random.random()>0.5:
+            rx = random.randint(0,2*2)
+            ry = random.randint(0,2*2)
+            img = img[ry:ry+112,rx:rx+96,:]
+        else:
+            img = img[2:2+112,2:2+96,:]
+    else:
+        img = img[2:2+112,2:2+96,:]
+
+
+    img = img.transpose(2, 0, 1).reshape((1,3,112,96))
+    img = ( img - 127.5 ) / 128.0
+    label = np.zeros((1,1),np.float32)
+    label[0,0] = classid
+    return (img,label)
 
 def printoneline(*argv):
     s = ''

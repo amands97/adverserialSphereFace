@@ -55,7 +55,7 @@ def train(epoch,args):
     correct2 = 0
     total2 = 0
     batch_idx = 0
-    ds = ImageDataset(args.dataset,dataset_load,'data/masked_casia_landmark.txt',name=args.net+':train',
+    ds = ImageDataset(args.dataset,dataset_load_noalign,'data/masked_casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
     global n_iter
     while True:
