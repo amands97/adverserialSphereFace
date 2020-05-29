@@ -98,7 +98,7 @@ class ImageDataset(object):
                 print(foldernames)
                 for line in lines: 
                     if line not in foldernames:
-                        print(line)
+                        # print(line)
                         continue
                     self.flist.append(imageroot+line) # root/filepath classname || zippath:filename classname
 
