@@ -96,7 +96,9 @@ class ImageDataset(object):
                 foldernames =[i.filename for i in self.zfile.filelist]
                 # print(lines)
                 # print(foldernames)
+                names_ = [line.split(" ")[0] for line in lines]
                 idx = 0
+                print("start")
                 for line in lines: 
                     idx += 1
                     if (idx % 10000 == 1):
