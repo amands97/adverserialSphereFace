@@ -5,6 +5,7 @@ import csv
 zfile = zipfile.ZipFile("../masked_casia.zip")
 writeFile = open("masked_casia_landmark.txt", "w")
 idx = 0
+print(zfile.namelist())
 with open("casia_landmark.txt") as f:
     lines = f.readlines()
     # print(lines[0].split("\t"))
