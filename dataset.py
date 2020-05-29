@@ -112,7 +112,7 @@ class ImageDataset(object):
                     #     # print(line)
                     #     continue
                     self.flist.append(imageroot+line) # root/filepath classname || zippath:filename classname
-                print("data list loaded", self.flist)
+                # print("data list loaded", self.flist)
         self.imagenum = len(self.flist)
         if self.shuffle: random.shuffle(self.flist)
         for filepath in self.flist:
