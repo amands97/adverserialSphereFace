@@ -72,7 +72,7 @@ def train(epoch,args):
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         # inputs, targets = Variable(inputs), Variable(targets)
-
+        print("reached here")
         if batch_idx % 25 == 0:
             newNet.eval()
                 
