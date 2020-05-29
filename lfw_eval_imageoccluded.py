@@ -180,7 +180,7 @@ for i in range(6000):
         if args.gpu == 1:
             mask = mask.cuda()
         img[i] = ((img[i] * mask))
-    img = img.detach().numpy()
+    img = img.detach().cpu().numpy()
     for i in range(4):
         # print(mask[i, 0])
         # print(outimg[i])
