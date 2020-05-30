@@ -20,7 +20,7 @@ from dataset import ImageDataset
 from matlab_cp2tform import get_similarity_transform_for_cv2
 import net_sphere
 import adversary
-from gumbel import gumbel_softmax
+from gumbel import SubsetOperator
 from torch.nn.functional import conv2d # for the kernel
 from torch.utils.tensorboard import SummaryWriter
 # from tensorboardX import SummaryWriter
@@ -97,15 +97,11 @@ def train(epoch,args):
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
 
-        # if batch_idx % 2 == 0:
-        print(maskNet(inputs).size())
         mask = maskNet(inputs)
-        print(mask.size())
-        mask1 = mask.view(mask.size()[0], -1)
-        print(mask1.size())
-        import sys
-        sys.exit()
-        mask =gumbel_softmax(maskNet(inputs))
+        maskTensorsize = mask.size()
+        mask = mask.view(maskTensorsize[0], -1)
+        mask = gumbelTopK(mask)
+        mask = mask.view(maskTensorsize)
         mask = upsampler(mask)
         maskedFeatures = torch.mul(mask, inputs)
         outputs = newNet(maskedFeatures)
@@ -117,21 +113,21 @@ def train(epoch,args):
         else:
             correct += predicted.eq(targets.data).sum()
         lossAdv = criterion(outputs, targets)
-        # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
+        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
         else:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
-        lossSize = 0
-        if lossSize1 > 0.25:
-            lossSize = (100*(lossSize1 - 0.25)).pow(2)
-        elif lossSize1 < 0.10:
-            lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
+        lossSize = lossSize1
+        # if lossSize1 > 0.25:
+        #     lossSize = (100*(lossSize1 - 0.25)).pow(2)
+        # elif lossSize1 < 0.10:
+        #     lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
         # print(lossSize1) 
         writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
-        # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
+        writer.add_scalar('Loss/adv-compactness', lossCompact, n_iter)
         writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-        loss = (-lossAdv)  + lossSize
+        loss = (-lossAdv)  + lossCompact/1000
         writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
         lossd = loss.data
 
@@ -163,9 +159,15 @@ def train(epoch,args):
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         
         if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
-            print(batch_idx, "mask way")
-            mask = gumbel_softmax(maskNet(inputs))
+
+            mask = maskNet(inputs)
+            maskTensorsize = mask.size()
+            mask = mask.view(maskTensorsize[0], -1)
+            mask = gumbelTopK(mask)
+            mask = mask.view(maskTensorsize)
             mask = upsampler(mask)
+    
+
             maskedFeatures = torch.mul(mask.detach(), inputs)
 
         else:
@@ -251,6 +253,13 @@ if use_cuda:
     maskNet.cuda()
     fcNet.cuda()
     laplacianKernel =  laplacianKernel.cuda()
+    device = torch.device("cuda")
+
+    gumbelTopK = SubsetOperator(args.k, tau = 0.01, hard = True, device)
+else:
+    device = torch.device("cpu")
+    gumbelTopK = SubsetOperator(args.k, tau = 0.01, hard = True, device)
+
 newNet = nn.Sequential(featureNet, fcNet)
 criterion = net_sphere.AngleLoss()
 criterion2 = net_sphere.AngleLoss()
