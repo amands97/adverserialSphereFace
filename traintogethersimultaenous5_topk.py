@@ -99,6 +99,10 @@ def train(epoch,args):
 
         # if batch_idx % 2 == 0:
         print(maskNet(inputs).size())
+        mask = maskNet(inputs)
+        print(mask.size())
+        mask1 = mask.view(mask.size()[0], -1)
+        print(mask1.size())
         import sys
         sys.exit()
         mask =gumbel_softmax(maskNet(inputs))
