@@ -256,10 +256,10 @@ if use_cuda:
     laplacianKernel =  laplacianKernel.cuda()
     device = torch.device("cuda")
 
-    gumbelTopK = SubsetOperator(args.k, tau = 0.01, hard = True, device)
+    gumbelTopK = SubsetOperator(args.k, tau = 0.01, hard = True, device = device)
 else:
     device = torch.device("cpu")
-    gumbelTopK = SubsetOperator(args.k, tau = 0.01, hard = True, device)
+    gumbelTopK = SubsetOperator(args.k, tau = 0.01, hard = True, device = device)
 
 newNet = nn.Sequential(featureNet, fcNet)
 criterion = net_sphere.AngleLoss()
