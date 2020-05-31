@@ -40,7 +40,7 @@ parser.add_argument('--savefolder', default=-1, type=int, help='if use checkpoin
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 parser.add_argument('--prob', '-p', default = 0.5, type =float)
-parser.add_argument('--k', default = 14, type =int)
+parser.add_argument('--k', default = 14 , type =int)
 
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
@@ -103,6 +103,7 @@ def train(epoch,args):
         mask = mask.view(maskTensorsize[0], -1)
         mask = gumbelTopK(mask)
         mask = mask.view(maskTensorsize)
+        mask = 1 - mask
         mask = upsampler(mask)
         maskedFeatures = torch.mul(mask, inputs)
         outputs = newNet(maskedFeatures)
