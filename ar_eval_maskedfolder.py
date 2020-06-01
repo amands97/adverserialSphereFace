@@ -67,7 +67,7 @@ if args.model_folder == -1:
 else:
     featureNet.load_state_dict(torch.load('saved_models_ce_masked{}/featureNet_'.format(args.model_folder) + args.epoch_num + '.pth'))
 
-# featureNet.cuda()
+featureNet.cuda()
 featureNet.eval()
 
 
@@ -77,7 +77,7 @@ if args.model_folder == -1:
 else:
     fcNet.load_state_dict(torch.load("saved_models_ce_masked{}/fcNet_".format(args.model_folder)+ args.epoch_num + ".pth"))
 
-# fcNet.cuda()
+fcNet.cuda()
 fcNet.feature = True
 fcNet.eval()
 
@@ -136,7 +136,7 @@ for i in range(len(pairs_lines)):
         imglist[i] = (imglist[i]-127.5)/128.0
 
     img = np.vstack(imglist)
-    img = Variable(torch.from_numpy(img).float(),volatile=True)#.cuda()
+    img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
 
     # print(img.shape)
     # from matplotlib import pyplot as  plt
