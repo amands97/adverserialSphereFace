@@ -104,6 +104,8 @@ def train(epoch,args):
         mask = gumbelTopK(mask)
         mask = mask.view(maskTensorsize)
         mask = 1 - mask
+        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
+
         mask = upsampler(mask)
         maskedFeatures = torch.mul(mask, inputs)
         outputs = newNet(maskedFeatures)
@@ -115,7 +117,6 @@ def train(epoch,args):
         else:
             correct += predicted.eq(targets.data).sum()
         lossAdv = criterion(outputs, targets)
-        lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
         else:
