@@ -99,7 +99,7 @@ zfile = zipfile.ZipFile(args.lfw)
 with open('data/ardata_pairs.txt') as f:
     pairs_lines = f.readlines()
 
-pairs_lines = pairs_lines[:10]
+pairs_lines = pairs_lines
 count1 = 0
 count2 = 0
 for i in range(len(pairs_lines)):
@@ -178,7 +178,7 @@ for i in range(len(pairs_lines)):
 
 accuracy = []
 thd = []
-folds = KFold(n=len(pairs_lines), n_folds=10, shuffle=False)
+folds = KFold(n=len(pairs_lines), n_folds=10, shuffle=True)
 thresholds = np.arange(-1.0, 1.0, 0.005)
 predicts = np.array(map(lambda line:line.strip('\n').split(), predicts))
 for idx, (train, test) in enumerate(folds):
