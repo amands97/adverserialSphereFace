@@ -61,11 +61,11 @@ def train(epoch,args):
     batch_idx = 0
     ds = ImageDataset(args.dataset,dataset_load,'data/casia_landmark.txt',name=args.net+':train',
         bs=args.bs,shuffle=True,nthread=6,imagesize=128)
-
+    print("epoch", epoch)
     global n_iter
     while True:
-        if batch_idx % 50 == 0 and batch_idx > 0:
-            print(batch_idx)
+        # if batch_idx % 500 == 0 and batch_idx > 0:
+        #     print(batch_idx)
             # if batch_idx > 100:
             #     break
 
@@ -175,7 +175,7 @@ def train(epoch,args):
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         features = featureNet(inputs)
         if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
-
+            print("reached here")
             mask = maskNet(features)
             maskTensorsize = mask.size()
             mask = mask.view(maskTensorsize[0], -1)
