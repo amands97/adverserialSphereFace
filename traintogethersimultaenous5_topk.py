@@ -286,11 +286,15 @@ criterion2 = net_sphere.AngleLoss()
 # criterion2 = torch.nn.CrossEntropyLoss()
 # upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
+tau = 1
 for epoch in range(0, 100):
     if epoch in [0,10,15,18]:
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
+            tau *= 0.1
+        gumbelTopK = SubsetOperator(args.k, tau = tau, hard = True, device = device)
+
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameteres()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
         
         # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
