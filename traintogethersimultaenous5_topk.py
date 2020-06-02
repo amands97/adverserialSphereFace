@@ -76,7 +76,14 @@ def train(epoch,args):
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         # inputs, targets = Variable(inputs), Variable(targets)
-
+        maskNet.zero_grad()
+        # featureNet.zero_grad()
+        # fcNet.zero_grad()
+        # newNet.zero_grad()
+        fcNet.zero_grad()
+        featureNet.zero_grad()
+        optimizerMask.zero_grad()
+        optimizerFC.zero_grad()
         if batch_idx % 25 == 0:
             # newNet.eval()
             featureNet.eval()
