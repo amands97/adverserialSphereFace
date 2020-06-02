@@ -58,8 +58,8 @@ parser.add_argument('--model_folder', type=int, default = -1)
 
 args = parser.parse_args()
 
-predicts=[]
-
+train_predicts=[]
+test_predicts = []
 
 featureNet = getattr(net_sphere,args.net)()
 if args.model_folder == -1:
@@ -96,16 +96,19 @@ zfile = zipfile.ZipFile(args.lfw)
 #     l = line.replace('\n','').split('\t')
 #     landmark[l[0]] = [int(k) for k in l[1:]]
 
-with open('data/ardata_pairs.txt') as f:
-    pairs_lines = f.readlines()
+with open('data/ardata_pairs_train.txt') as f:
+    train_pairs_lines = f.readlines()
 
-pairs_lines = pairs_lines
+with open('data/ardata_pairs_test.txt') as f:
+    test_pairs_lines = f.readlines()
+# pairs_lines = pairs_lines
+
 count1 = 0
 count2 = 0
-for i in range(len(pairs_lines)):
+for i in range(len(train_pairs_lines)):
     if (i%100 == 0):
         print("done:", i)
-    p = pairs_lines[i].replace('\n','').split(" ")
+    p = train_pairs_lines[i].replace('\n','').split(" ")
 
     if 3==len(p):
         sameflag = 1
@@ -154,37 +157,101 @@ for i in range(len(pairs_lines)):
     # plt.show()
 
 
-    # import sys
-    # sys.exit()
-
-
-
-
-
-
-
-
-    # output = net(img)
     output = featureNet(img)
-    # print(output)
     output = fcNet(output)
-    # print(output)
     f = output.data
     f1,f2 = f[0],f[2]
     cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
-    print(cosdistance)
-    predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
+    # print(cosdistance)
+    train_predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
+print("working on test images now")
+for i in range(len(test_pairs_lines)):
+    if (i%100 == 0):
+        print("done:", i)
+    p = test_pairs_lines[i].replace('\n','').split(" ")
+
+    if 3==len(p):
+        sameflag = 1
+        name1 = p[0]+'/'+'{:02}.bmp'.format(int(p[1]))
+        name2 = p[0]+'/'+'{:02}.bmp'.format(int(p[2]))
+        count1 += 1
+    if 4==len(p):
+        sameflag = 0
+        name1 = p[0]+'/'+'{:02}.bmp'.format(int(p[1]))
+        name2 = p[2]+'/'+'{:02}.bmp'.format(int(p[3]))
+        count2 += 1
+    # print(name1, name2)
+    # pass
+    img1 = cv2.imdecode(np.frombuffer(zfile.read(name1),np.uint8),1)
+    img2 = cv2.imdecode(np.frombuffer(zfile.read(name2),np.uint8),1)
+    img1 = cv2.resize(img1, (96, 112))
+    img2 = cv2.resize(img2, (96, 112))
+    # img1.show()
+    # print(img1.shape)
+    # cv2.imshow('ImageWindow', img1)
+    # cv2.waitKey()
+    # continue
 
 
-accuracy = []
-thd = []
-folds = KFold(n=len(pairs_lines), n_folds=10, shuffle=True)
+    imglist = [img1,cv2.flip(img1,1),img2,cv2.flip(img2,1)]
+    for i in range(len(imglist)):
+        imglist[i] = imglist[i].transpose(2, 0, 1).reshape((1,3,112,96))
+        imglist[i] = (imglist[i]-127.5)/128.0
+
+    img = np.vstack(imglist)
+    img = Variable(torch.from_numpy(img).float(),volatile=True).cuda()
+
+    # print(img.shape)
+    # from matplotlib import pyplot as  plt
+    # input_image = img[:1]
+    # print(input_image.shape)
+    # output = input_image.data
+    # print(output.size(1))
+    # fig, axarr = plt.subplots(output.size(1))
+    # print(output.size())
+    # for idx in range(output.size(1)):
+    #     # print(output[:, idx].shape)
+    #     # print(output.shape)
+    #     # print(output[idx].shape)
+    #     axarr[idx].imshow(output[0, idx])
+    # plt.show()
+
+
+    output = featureNet(img)
+    output = fcNet(output)
+    f = output.data
+    f1,f2 = f[0],f[2]
+    cosdistance = f1.dot(f2)/(f1.norm()*f2.norm()+1e-5)
+    # print(cosdistance)
+    test_predicts.append('{}\t{}\t{}\t{}\n'.format(name1,name2,cosdistance,sameflag))
+
+# accuracy = []
+# thd = []
+# folds = KFold(n=len(train_pairs_lines), n_folds=10, shuffle=True)
 thresholds = np.arange(-1.0, 1.0, 0.005)
-predicts = np.array(map(lambda line:line.strip('\n').split(), predicts))
-for idx, (train, test) in enumerate(folds):
+train_predicts = np.array(map(lambda line:line.strip('\n').split(), train_predicts))
+# for idx, (train, test) in enumerate(folds):
     
-    best_thresh = find_best_threshold(thresholds, predicts[train])
-    accuracy.append(eval_acc(best_thresh, predicts[test]))
-    thd.append(best_thresh)
-print(accuracy)
-print('LFWACC={:.4f} std={:.4f} thd={:.4f}'.format(np.mean(accuracy), np.std(accuracy), np.mean(thd)))
+best_thresh = find_best_threshold(thresholds, train_predicts)
+# accuracy.append(eval_acc(best_thresh, test_predicts))
+# thd.append(best_thresh)
+# print(accuracy)
+# accuracy = []
+# thd = []
+# folds = KFold(n=len(train_pairs_lines), n_folds=10, shuffle=True)
+# thresholds = np.arange(-1.0, 1.0, 0.005)
+# predicts = np.array(map(lambda line:line.strip('\n').split(), predicts))
+# for idx, (train, test) in enumerate(folds):
+    
+#     best_thresh = find_best_threshold(thresholds, predicts[train])
+#     accuracy.append(eval_acc(best_thresh, predicts[test]))
+#     thd.append(best_thresh)
+# print(accuracy)
+test_predicts = np.array(map(lambda line:line.strip('\n').split(), test_predicts))
+accuracy = eval_acc(best_thresh, test_predicts)
+
+# print('LFWACC={:.4f} std={:.4f} thd={:.4f}'.format(np.mean(accuracy), np.std(accuracy), np.mean(thd)))
+print('LFWACC={:.4f} thd={:.4f}'.format(accuracy, best_thresh))
+
+
+
