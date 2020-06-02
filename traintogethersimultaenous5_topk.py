@@ -88,15 +88,16 @@ def train(epoch,args):
             # newNet.eval()
             featureNet.eval()
             fcNet.eval()
-            outputs = fcNet(featureNet(inputs))
-            outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-            _, predicted = torch.max(outputs1.data, 1)
-            total2 += targets.size(0)
-            if use_cuda:
-                correct2 += predicted.eq(targets.data).cpu().sum()
-            else:
-                correct2 += predicted.eq(targets.data).sum()
-            writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
+            with torch.no_grad():
+                outputs = fcNet(featureNet(inputs))
+                outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+                _, predicted = torch.max(outputs1.data, 1)
+                total2 += targets.size(0)
+                if use_cuda:
+                    correct2 += predicted.eq(targets.data).cpu().sum()
+                else:
+                    correct2 += predicted.eq(targets.data).sum()
+                writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
             featureNet.train()
             fcNet.train()
         inputs = torch.from_numpy(img).float()
