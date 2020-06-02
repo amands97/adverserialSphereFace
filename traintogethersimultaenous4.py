@@ -50,6 +50,7 @@ parser.add_argument('--startfolder', default=-1, type=int, help='if use checkpoi
 parser.add_argument('--savefolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
+parser.add_argument('--prob', '-p', default = 0.5, type =float)
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
@@ -155,10 +156,12 @@ def train(epoch,args):
         fcNet.zero_grad()
         optimizerFC.zero_grad()
         features = featureNet(inputs)
-
-        mask = gumbel_softmax(maskNet(features))
-        # mask = upsampler(mask)
-        maskedFeatures = torch.mul(mask, features)
+        if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
+            mask = gumbel_softmax(maskNet(features))
+            # mask = upsampler(mask)
+            maskedFeatures = torch.mul(mask, features)
+        else:
+            maskedFeatures = features
         outputs = fcNet(maskedFeatures)
         total += targets.size(0)
 
@@ -235,25 +238,27 @@ if use_cuda:
 criterion = net_sphere.AngleLoss()
 # optimizerFC = optim.SGD(list(featureNet.parameters() + fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 
-optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
+# optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+# optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
 
-# optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
-# optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
+
+optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
+optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
 
 
 criterion2 = torch.nn.CrossEntropyLoss()
 # upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
-    if epoch in [0, 12, 22, 30, 45, 60]:
+    if epoch in [0, 22, 45, 65, 85]:
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
             # optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-            
-            optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-            optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
+            optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
+            optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
+            # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+            # optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
         # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)

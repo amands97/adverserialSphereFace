@@ -1,18 +1,4 @@
-# CUDA_VISIBLE_DEVICES=2 python train.py --datase CASIA-WebFace.zip --bs 256
-
-# --lr 0.00002 --lrfc 0.1 --mom 0.000009 --momfc 0.09 --checkpoint 1 first 150
-# got worse and worse
-
-# --lr 0.000005 --lrfc 0.01 --mom 0.000009 --momfc 0.09 --checkpoint 1 later 148
-# better at the first epoch. shows promising increase. 50 - 60% occlusion and mask is doing good in this region
-
-# --lr 0.00002 --lrfc 0.01 --mom 0.000009 --momfc 0.09 --checkpoint 1 last 150
-
-
-#  --lr 0.000005 --lrfc 0.01 --mom 0.000009 --momfc 0.09 --checkpoint 1 later 148
-# python train.py --dataset casia.zip --bs 10 --lr 0.0001 --lrfc 0.00005 --mom 0.0000 --momfc 0.0000 --checkpoint blok
-#  fine lr 0.01 and lrfc 0.0000001 use mom 0. maybe try 0.001
-
+# with original lr schedule
 from __future__ import print_function
 
 import torch
@@ -50,6 +36,8 @@ parser.add_argument('--startfolder', default=-1, type=int, help='if use checkpoi
 parser.add_argument('--savefolder', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
 
 parser.add_argument('--checkpoint', default=-1, type=int, help='if use checkpoint then mention the number, otherwise training from scratch')
+parser.add_argument('--prob', '-p', default = 0.5, type =float)
+
 args = parser.parse_args()
 use_cuda = torch.cuda.is_available()
 
@@ -76,20 +64,19 @@ def train(epoch,args):
             print(batch_idx)
             # if batch_idx > 100:
             #     break
+
         n_iter += 1
         img,label = ds.get()
         if img is None: break
         inputs = torch.from_numpy(img).float()
         targets = torch.from_numpy(label[:,0]).long()
         if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
-        inputs, targets = Variable(inputs), Variable(targets)
+        # inputs, targets = Variable(inputs), Variable(targets)
 
-
-        if batch_idx % 25 == 0 and batch_idx != 0:
-            # newNet.eval()
-            featureNet.eval()
-            fcNet.eval()
-            outputs = fcNet(featureNet(inputs))
+        if batch_idx % 25 == 0:
+            newNet.eval()
+                
+            outputs = newNet(inputs)
             outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
             _, predicted = torch.max(outputs1.data, 1)
             total2 += targets.size(0)
@@ -97,37 +84,68 @@ def train(epoch,args):
                 correct2 += predicted.eq(targets.data).cpu().sum()
             else:
                 correct2 += predicted.eq(targets.data).sum()
-            writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
-            # newNet.train()
-            featureNet.train()
-            fcNet.train()
+            writer.add_scalar("Accuracy/true",  (100.0 *correct2)/(total2 * 1.0), n_iter)
+            newNet.train()
+        # if epoch % 2 == 1:
         maskNet.zero_grad()
         featureNet.zero_grad()
         fcNet.zero_grad()
+        newNet.zero_grad()
         optimizerMask.zero_grad()
         optimizerFC.zero_grad()
-        # mask =gumbel_softmax(maskNet(inputs))
-        # print(mask.shape, inputs.shape)
+
+        # if batch_idx % 2 == 0:
+        # set this optimizer mask grad to be zero again
+        # optimizerMask.zero_grad()
+        # maskNet.zero_grad()
+        newNet.zero_grad()
+        # # featureNet.zero_grad()
+        # # fcNet.zero_grad()
+        optimizerFC.zero_grad()
+
+        # if np.random.choice([0,1], 1, p = [1 - args.prob, args.prob])[0] == 1:
+        mask = gumbel_softmax(maskNet(inputs))
+        mask = upsampler(mask)
+        maskedFeatures = torch.mul(mask.detach(), inputs)
+        print("came here")
+        # else:
+            # maskedFeatures = inputs
+            # print("not")
+
+        # mask = gumbel_softmax(maskNet(inputs))
         # mask = upsampler(mask)
-        # maskedFeatures = torch.mul(mask, inputs)
-        # print(inputs.size())
-        features = featureNet(inputs)
-        # print(features.size())
-        # print(maskNet(features).size())
-        mask =gumbel_softmax(maskNet(features.detach()))
-        maskedFeatures = torch.mul(mask, features)
-        outputs = fcNet(features) 
-        # print(outputs[0].size())
-        # import sys
-        # sys.exit()
-        outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
-        _, predicted = torch.max(outputs1.data, 1)
-        total += targets.size(0)
-        if use_cuda:
-            correct += predicted.eq(targets.data).cpu().sum()
-        else:
-            correct += predicted.eq(targets.data).sum()
-        lossAdv = criterion(outputs, targets.detach())
+        # maskedFeatures = torch.mul(mask.detach(), inputs).detach()
+        outputs = newNet(maskedFeatures)
+
+
+        lossC = criterion(outputs, targets)
+        lossClassification = lossC.data
+        lossC.backward()
+        optimizerFC.step()
+        classification_loss += lossClassification
+        # train_loss += loss.data
+
+        writer.add_scalar('classificationNet/classn-loss', classification_loss/(batch_idx + 1), n_iter)
+        # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
+        # writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
+        # writer.add_scalar('Accuracy/correct', correct, n_iter)
+            
+        # else:
+        maskNet.zero_grad()
+        # mask =gumbel_softmax(maskNet(inputs))
+        # mask = upsampler(mask)
+        maskedFeatures = torch.mul(mask, inputs)
+        outputs = newNet(maskedFeatures)
+        # outputs1 = outputs[0] # 0=cos_theta 1=phi_theta
+        # _, predicted = torch.max(outputs1.data, 1)
+        # total += targets.size(0)
+        # if use_cuda:
+            # correct += predicted.eq(targets.data).cpu().sum()
+        # else:
+            # correct += predicted.eq(targets.data).sum()
+        targets = torch.from_numpy(label[:,0]).long()
+        if use_cuda: targets = targets.cuda()
+        lossAdv = criterion(outputs, targets)
         # lossCompact = torch.sum(conv2d(mask, laplacianKernel, stride=1, groups=1))
         if use_cuda:
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()).cuda(), reduction = 'mean')
@@ -135,45 +153,20 @@ def train(epoch,args):
             lossSize1 = F.l1_loss(mask, target=torch.ones(mask.size()), reduction = 'mean')
         lossSize = 0
         if lossSize1 > 0.25:
-            lossSize = ((lossSize1 - 0.25)).pow(2)
+            lossSize = (100*(lossSize1 - 0.25)).pow(2)
         elif lossSize1 < 0.10:
-            lossSize = (100 * (0.10 - lossSize1).pow(2))
+            lossSize = 10000*(100 * (0.10 - lossSize1).pow(2))
         # print(lossSize1) 
-        writer.add_scalar('Loss/adv-classification', -lossAdv, n_iter)
+        writer.add_scalar('mask/adv-classification', -lossAdv, n_iter)
+        writer.add_scalar('mask/losssize1', lossSize1, n_iter)
+
         # writer.add_scalar('Loss/adv-compactness', lossCompact/10, n_iter)
-        writer.add_scalar('Loss/adv-size', lossSize, n_iter)
-        loss = (-lossAdv)  + lossSize
-        writer.add_scalar('Accuracy/adv-totalLoss', loss, n_iter)
-        lossd = loss.data
+        writer.add_scalar('mask/adv-size', lossSize, n_iter)
+        loss = (-lossAdv)  + lossSize/10
+        writer.add_scalar('mask/adv-totalLoss', loss, n_iter)
+        # lossd = loss.data
         loss.backward()
         optimizerMask.step()
-        # else:
-        # set this optimizer mask grad to be zero again
-        optimizerMask.zero_grad()
-        maskNet.zero_grad()
-        featureNet.zero_grad()
-        fcNet.zero_grad()
-        optimizerFC.zero_grad()
-        features = featureNet(inputs)
-
-        mask = gumbel_softmax(maskNet(features))
-        # mask = upsampler(mask)
-        maskedFeatures = torch.mul(mask, features)
-        outputs = fcNet(maskedFeatures)
-        total += targets.size(0)
-
-        lossC = criterion(outputs, targets.detach())
-        lossClassification = lossC.data
-        lossC.backward()
-        optimizerFC.step()
-        classification_loss += lossClassification
-        # train_loss += loss.data
-
-        writer.add_scalar('Loss/classn-loss', classification_loss/(batch_idx + 1), n_iter)
-        # writer.add_scalar('Loss/adv-avgloss', train_loss/(batch_idx + 1), n_iter)
-        writer.add_scalar('Accuracy/classification', 100* correct/(total*1.0), n_iter)
-        writer.add_scalar('Accuracy/correct', correct, n_iter)
-        
 
         batch_idx += 1
     print('')
@@ -194,35 +187,31 @@ if args.checkpoint == -1:
 else:
     featureNet = getattr(net_sphere,args.net)()
     if args.startfolder == -1:
-        featureNet.load_state_dict(torch.load('saved_models_ce_mid/featureNet_' + str(args.checkpoint) + '.pth'))
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
     else:
-        featureNet.load_state_dict(torch.load('saved_models_ce_mid'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
+        featureNet.load_state_dict(torch.load('saved_models_ce_masked'+ str(args.startfolder) + '/featureNet_' + str(args.checkpoint) + '.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
-    if args.startfolder == -1:
-        maskNet.load_state_dict(torch.load('saved_models_ce_mid/maskNet_' + str(args.checkpoint) + '.pth'))
-    else:
-        maskNet.load_state_dict(torch.load('saved_models_ce_mid'+ str(args.startfolder) + '/maskNet_' + str(args.checkpoint) + '.pth'))
-        
+    # maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
     fcNet = getattr(net_sphere, "fclayers")()
     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
     if args.startfolder == -1:
-        fcNet.load_state_dict(torch.load('saved_models_ce_mid/fcNet_'+ str(args.checkpoint)+ '.pth'))
+        fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
     else:
-        fcNet.load_state_dict(torch.load('saved_models_ce_mid' + str(args.startfolder) + '/fcNet_'+ str(args.checkpoint)+ '.pth'))
+        fcNet.load_state_dict(torch.load('saved_models_ce_masked' + str(args.startfolder) + '/fcNet_'+ str(args.checkpoint)+ '.pth'))
 
     laplacianKernel = getKernel()
 # else:
 #     featureNet = getattr(net_sphere,args.net)()
-#     featureNet.load_state_dict(torch.load('saved_models_ce_mid/featureNet_' + str(args.checkpoint) + '.pth'))
+#     featureNet.load_state_dict(torch.load('saved_models_ce_masked/featureNet_' + str(args.checkpoint) + '.pth'))
 
 #     maskNet = getattr(adversary, "MaskMan")()
-#     maskNet.load_state_dict(torch.load('saved_models_ce_mid/maskNet_' + str(args.checkpoint) + '.pth'))
+#     maskNet.load_state_dict(torch.load('saved_models_ce_masked/maskNet_' + str(args.checkpoint) + '.pth'))
 #     fcNet = getattr(net_sphere, "fclayers")()
 #     # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
 #     # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-#     fcNet.load_state_dict(torch.load('saved_models_ce_mid/fcNet_'+ str(args.checkpoint)+ '.pth'))
+#     fcNet.load_state_dict(torch.load('saved_models_ce_masked/fcNet_'+ str(args.checkpoint)+ '.pth'))
 #     laplacianKernel = getKernel()
 # print(advNet)
 # net = getattr(net_sphere, "newNetwork")(net1, advNet)
@@ -231,29 +220,29 @@ if use_cuda:
     maskNet.cuda()
     fcNet.cuda()
     laplacianKernel =  laplacianKernel.cuda()
-# newNet = nn.Sequential(featureNet, fcNet)
+newNet = nn.Sequential(featureNet, fcNet)
 criterion = net_sphere.AngleLoss()
-# optimizerFC = optim.SGD(list(featureNet.parameters() + fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+# optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
 
-optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
+# optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+# optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom,  weight_decay=5e-4)
 
 # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
 # optimizerMask = optim.Adam(maskNet.parameters(), lr = args.lr)
 
 
 criterion2 = torch.nn.CrossEntropyLoss()
-# upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
+upsampler = torch.nn.Upsample(scale_factor = 16, mode = 'nearest')
 print('start: time={}'.format(dt()))
 for epoch in range(0, 100):
-    if epoch in [0, 12, 22, 30, 45, 60]:
+    if epoch in [0,10,15,18]:
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
-            # optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-            
-            optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
-            optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
+        optimizerFC = optim.SGD(newNet.parameters(), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+        
+        # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+        optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
         # python train.py --dataset CASIA-WebFace.zip --bs 100 --lr 0.0003  --mom 0.09 --lrfc 0.00005 --momfc 0.09 --checkpoint=10 
         # slowed the lr even more
         # optimizerFC = optim.Adam(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc)
@@ -265,12 +254,12 @@ for epoch in range(0, 100):
         # optimizerFC = optim.SGD(fcNet.parameters(), lr=args.lr, momentum=0.9, weight_decay=5e-4)
     train(epoch,args)
     if args.savefolder == -1:
-        save_model(featureNet, 'saved_models_ce_mid/featureNet_{}.pth'.format(epoch))
-        save_model(maskNet, 'saved_models_ce_mid/maskNet_{}.pth'.format(epoch))
-        save_model(fcNet, 'saved_models_ce_mid/fcNet_{}.pth'.format(epoch))
+        save_model(featureNet, 'saved_models_ce_masked/featureNet_{}.pth'.format(epoch))
+        save_model(maskNet, 'saved_models_ce_masked/maskNet_{}.pth'.format(epoch))
+        save_model(fcNet, 'saved_models_ce_masked/fcNet_{}.pth'.format(epoch))
     else:
-        save_model(featureNet, 'saved_models_ce_mid{}/featureNet_{}.pth'.format(args.savefolder, epoch))
-        save_model(maskNet, 'saved_models_ce_mid{}/maskNet_{}.pth'.format(args.savefolder,epoch))
-        save_model(fcNet, 'saved_models_ce_mid{}/fcNet_{}.pth'.format(args.savefolder,epoch))
+        save_model(featureNet, 'saved_models_ce_masked{}/featureNet_{}.pth'.format(args.savefolder, epoch))
+        save_model(maskNet, 'saved_models_ce_masked{}/maskNet_{}.pth'.format(args.savefolder,epoch))
+        save_model(fcNet, 'saved_models_ce_masked{}/fcNet_{}.pth'.format(args.savefolder,epoch))
 print('finish: time={}\n'.format(dt()))
 
