@@ -295,7 +295,7 @@ for epoch in range(0, 100):
             tau *= 0.1
         gumbelTopK = SubsetOperator(args.k, tau = tau, hard = True, device = device)
 
-        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameteres()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
+        optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
         
         # optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
         optimizerMask = optim.SGD(maskNet.parameters(), lr = args.lr, momentum=args.mom, weight_decay=5e-4)
