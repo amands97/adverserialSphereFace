@@ -99,6 +99,9 @@ def train(epoch,args):
             writer.add_scalar("Accuracy/true", 100 * (correct2)/(total2 * 1.0), n_iter)
             featureNet.train()
             fcNet.train()
+        inputs = torch.from_numpy(img).float()
+        targets = torch.from_numpy(label[:,0]).long()
+        if use_cuda: inputs, targets = inputs.cuda(), targets.cuda()
         # if epoch % 2 == 1:
         maskNet.zero_grad()
         # featureNet.zero_grad()
