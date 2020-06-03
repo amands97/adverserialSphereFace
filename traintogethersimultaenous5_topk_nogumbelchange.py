@@ -303,7 +303,7 @@ for epoch in range(0, 100):
         if epoch!=0:
             args.lr *= 0.1
             args.lrfc *= 0.1
-            tau *= 0.1
+            # tau *= 0.1
         gumbelTopK = SubsetOperator(args.k, tau = tau, hard = True, device = device)
 
         optimizerFC = optim.SGD(list(featureNet.parameters()) + list(fcNet.parameters()), lr=args.lrfc, momentum=args.momfc, weight_decay=5e-4)
