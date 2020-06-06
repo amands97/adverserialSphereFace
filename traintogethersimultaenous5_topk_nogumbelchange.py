@@ -224,14 +224,14 @@ def train(epoch,args):
 if args.checkpoint == -1:
     featureNet = getattr(net_sphere,args.net)()
 
-    # featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
+    featureNet.load_state_dict(torch.load('model/sphere20a_20171020.pth'))
 
     maskNet = getattr(adversary, "MaskMan")()
 
     fcNet = getattr(net_sphere, "fclayers")()
-    # pretrainedDict = torch.load('model/sphere20a_20171020.pth')
-    # fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
-    # fcNet.load_state_dict(fcDict)
+    pretrainedDict = torch.load('model/sphere20a_20171020.pth')
+    fcDict = {k: pretrainedDict[k] for k in pretrainedDict if k in fcNet.state_dict()}
+    fcNet.load_state_dict(fcDict)
     laplacianKernel = getKernel()
 else:
     featureNet = getattr(net_sphere,args.net)()
